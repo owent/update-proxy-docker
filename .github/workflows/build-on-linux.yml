@@ -1,0 +1,33 @@
+name: "Build On Linux"
+
+on: # @see https://help.github.com/en/articles/events-that-trigger-workflows#webhook-events
+  push:
+    branches: # Array of patterns that match refs/heads
+      - master # Push events on master branch
+      - dev
+    tags:
+      - "*"
+  schedule:
+    # * is a special character in YAML so you have to quote this string
+    - cron: "47 1 * * 3"
+
+jobs:
+  build: # job id, can be any string
+    # Job name is Build And Publish
+    name: Build
+    # This job runs on Linux
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Build
+        shell: bash
+        run: |
+          which docker || true;
+          curl -k -L --retry 10 --retry-max-time 1800 -o v2ray.Dockerfile https://raw.githubusercontent.com/owent-utils/docker-setup/master/setup-router/v2ray.Dockerfile
+          echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "owt5008137" --password-stdin docker.io
+          docker build --force-rm --tag docker.io/owt5008137/proxy-with-geo:latest -f v2ray.Dockerfile .
+          docker push docker.io/owt5008137/proxy-with-geo:latest
