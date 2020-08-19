@@ -29,5 +29,5 @@ jobs:
           which docker || true;
           curl -k -L --retry 10 --retry-max-time 1800 -o v2ray.Dockerfile https://raw.githubusercontent.com/owent-utils/docker-setup/master/setup-router/v2ray.Dockerfile
           echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "owt5008137" --password-stdin docker.io
-          docker build --build-arg=GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} --force-rm --tag docker.io/owt5008137/proxy-with-geo:latest -f v2ray.Dockerfile .
+          docker build --build-arg=GITHUB_TOKEN=${{ secrets.PRIVATE_GITHUB_TOKEN }} --force-rm --tag docker.io/owt5008137/proxy-with-geo:latest -f v2ray.Dockerfile .
           docker push docker.io/owt5008137/proxy-with-geo:latest
