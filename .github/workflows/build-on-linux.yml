@@ -35,8 +35,8 @@ jobs:
         shell: bash
         run: |
           which docker || true;
-          curl -k -L --retry 10 --retry-max-time 1800 -o smartdns.Dockerfile https://raw.githubusercontent.com/owent-utils/docker-setup/main/setup-router/smartdns/Dockerfile
-          curl -k -L --retry 10 --retry-max-time 1800 -o smartdns.conf https://raw.githubusercontent.com/owent-utils/docker-setup/main/setup-router/smartdns/smartdns.conf
+          curl -k -L --retry 10 --retry-max-time 1800 -o smartdns.Dockerfile https://raw.githubusercontent.com/owent-utils/docker-setup/main/setup-router/smartdns/smartdns.Dockerfile
+          curl -k -L --retry 10 --retry-max-time 1800 -o smartdns.origin.conf https://raw.githubusercontent.com/owent-utils/docker-setup/main/setup-router/smartdns/smartdns.origin.conf
           echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "owt5008137" --password-stdin docker.io
           docker build --build-arg=GITHUB_TOKEN=${{ secrets.PRIVATE_GITHUB_TOKEN }} --force-rm --tag docker.io/owt5008137/smartdns:latest -f smartdns.Dockerfile .
           docker push docker.io/owt5008137/smartdns:latest
