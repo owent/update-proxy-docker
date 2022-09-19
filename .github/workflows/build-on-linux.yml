@@ -22,7 +22,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
+        with:
+          go-version: ">=1.18.0"
       - name: Build v2ray
         shell: bash
         run: |
@@ -50,14 +53,17 @@ jobs:
           cd coredns
           GITCOMMIT="$(git describe --dirty --always)"
           sed -i.bak -r '/alternate:.*/d' plugin.cfg
-          sed -i.bak '/forward:.*/a alternate:github.com/coredns/alternate' plugin.cfg
+          sed -i.bak '/forward:.*/i alternate:github.com/coredns/alternate' plugin.cfg
           go get github.com/coredns/alternate
-          sed -i.bak -r '/finalize :.*/d' plugin.cfg
-          echo "finalize:github.com/tmeckel/coredns-finalizer" >> plugin.cfg
+          sed -i.bak -r '/finalize:.*/d' plugin.cfg
+          sed -i.bak '/cache:.*/a finalize:github.com/tmeckel/coredns-finalizer' plugin.cfg
           go get github.com/tmeckel/coredns-finalizer
+          sed -i.bak -r '/nftables:.*/d' plugin.cfg
+          sed -i.bak '/cache:.*/i nftables:github.com/owent/coredns-nftables' plugin.cfg
+          go get github.com/owent/coredns-nftables
           go generate
           # make -f Makefile.release build LINUX_ARCH=amd64
-          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build  -ldflags="-s -w -X github.com/coredns/coredns/coremain.GitCommit=$GITCOMMIT" -o build/linux/amd64/coredns
+          CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build  -ldflags="-s -w -X github.com/coredns/coredns/coremain.GitCommit=$GITCOMMIT" -o build/linux/amd64/coredns
           which docker || true;
           echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "owt5008137" --password-stdin docker.io
           cd build/linux/amd64
