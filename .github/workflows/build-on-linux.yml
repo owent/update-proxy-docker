@@ -67,7 +67,7 @@ jobs:
           go generate
           # make -f Makefile.release build LINUX_ARCH=amd64
           # CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build  -ldflags="-s -w -X github.com/coredns/coredns/coremain.GitCommit=$GITCOMMIT" -o build/linux/amd64/coredns
-          GOOS=linux GOARCH=amd64 go build  -ldflags="-s -w -X github.com/coredns/coredns/coremain.GitCommit=$GITCOMMIT -extldflags -static" -o build/linux/amd64/coredns
+          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build  -ldflags="-s -w -X github.com/coredns/coredns/coremain.GitCommit=$GITCOMMIT -extldflags -static" -o build/linux/amd64/coredns
           which docker || true;
           echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "owt5008137" --password-stdin docker.io
           cd build/linux/amd64
