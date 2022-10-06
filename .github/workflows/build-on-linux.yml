@@ -71,5 +71,6 @@ jobs:
           which docker || true;
           echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "owt5008137" --password-stdin docker.io
           cd build/linux/amd64
+          sed -i.bak 's;FROM[[:space:]]+scratch;FROM debian:stable-slim;g' ../../../Dockerfile
           docker build --force-rm --tag docker.io/owt5008137/coredns:latest -f ../../../Dockerfile .
           docker push docker.io/owt5008137/coredns:latest
