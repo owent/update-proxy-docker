@@ -62,7 +62,7 @@ jobs:
           sed -i.bak '/cache:.*/a filter:github.com/owent/coredns-filter' plugin.cfg
           go get github.com/owent/coredns-filter
           sed -i.bak -r '/nftables:.*/d' plugin.cfg
-          sed -i.bak '/cache:.*/a nftables:github.com/owent/coredns-nftables' plugin.cfg
+          sed -i.bak '/cache:.*/i nftables:github.com/owent/coredns-nftables' plugin.cfg
           go get github.com/owent/coredns-nftables
           go generate
           # make -f Makefile.release build LINUX_ARCH=amd64
