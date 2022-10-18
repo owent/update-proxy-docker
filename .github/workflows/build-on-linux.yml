@@ -60,10 +60,10 @@ jobs:
           go get github.com/tmeckel/coredns-finalizer
           sed -i.bak -r '/filter:.*/d' plugin.cfg
           sed -i.bak '/cache:.*/a filter:github.com/owent/coredns-filter' plugin.cfg
-          go get github.com/owent/coredns-filter
+          go get github.com/owent/coredns-filter@main
           sed -i.bak -r '/nftables:.*/d' plugin.cfg
           sed -i.bak '/cache:.*/i nftables:github.com/owent/coredns-nftables' plugin.cfg
-          go get github.com/owent/coredns-nftables
+          go get github.com/owent/coredns-nftables@main
           go generate
           # Just like it in make -f Makefile.release build LINUX_ARCH=amd64
           # CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build  -ldflags="-s -w -X github.com/coredns/coredns/coremain.GitCommit=$GITCOMMIT" -o build/linux/amd64/coredns
