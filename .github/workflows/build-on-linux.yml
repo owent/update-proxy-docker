@@ -65,7 +65,7 @@ jobs:
           sed -i.bak '/cache:.*/i nftables:github.com/owent/coredns-nftables' plugin.cfg
           go get github.com/owent/coredns-nftables
           go generate
-          # make -f Makefile.release build LINUX_ARCH=amd64
+          # Just like it in make -f Makefile.release build LINUX_ARCH=amd64
           # CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build  -ldflags="-s -w -X github.com/coredns/coredns/coremain.GitCommit=$GITCOMMIT" -o build/linux/amd64/coredns
           CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build  -ldflags="-s -w -X github.com/coredns/coredns/coremain.GitCommit=$GITCOMMIT -extldflags -static" -o build/linux/amd64/coredns
           which docker || true;
