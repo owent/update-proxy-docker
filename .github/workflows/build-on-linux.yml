@@ -3,13 +3,12 @@ name: "Build On Linux"
 on: # @see https://help.github.com/en/articles/events-that-trigger-workflows#webhook-events
   push:
     branches: # Array of patterns that match refs/heads
-      - master # Push events on master branch
       - main
     tags:
       - "*"
   schedule:
     # * is a special character in YAML so you have to quote this string
-    - cron: "47 1 * * 3"
+    - cron: "47 2 * * 3"
 
 jobs:
   build: # job id, can be any string
