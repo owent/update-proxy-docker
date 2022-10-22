@@ -8,7 +8,7 @@ on: # @see https://help.github.com/en/articles/events-that-trigger-workflows#web
       - "*"
   schedule:
     # * is a special character in YAML so you have to quote this string
-    - cron: "47 2 * * 3"
+    - cron: "46 2 * * 3"
 
 jobs:
   build: # job id, can be any string
