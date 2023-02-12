@@ -14,10 +14,11 @@ RUN set -ex ;                                                                   
   sed -i -r 's#dl-cdn.alpinelinux.org#mirrors.aliyun.com#g' /etc/apk/repositories ;    \
   apk --no-cache add ca-certificates tzdata ;                                          \
   ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime ;                            \
-  mkdir -p /var/log/v2ray/ ;                                                           \
-  mkdir -p /usr/local/vproxy/bin ; mkdir -p /usr/local/vproxy/etc ; /var/log/vproxy/ ; \
+  mkdir -p /var/log/v2ray/ /var/log/vproxy/ ;                                          \
+  mkdir -p /usr/local/vproxy/bin /usr/local/vproxy/etc /usr/local/vproxy/share ;       \
   ln $(find /usr/local/v2ray/bin -type f) /usr/local/vproxy/bin;                       \
   ln $(find /usr/local/v2ray/etc -type f) /usr/local/vproxy/etc;                       \
+  ln $(find /usr/local/v2ray/share -type f) /usr/local/vproxy/share;                   \
   ln /usr/local/vproxy/bin/v2ray /usr/local/vproxy/bin/vproxyd;                        \
   chmod +x /usr/local/v2ray/bin/v2ray /usr/local/vproxy/bin/vproxyd;
 
