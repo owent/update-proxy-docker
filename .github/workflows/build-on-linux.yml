@@ -19,24 +19,49 @@ jobs:
       matrix:
         os: [ubuntu-latest]
     runs-on: ${{ matrix.os }}
+    env:
+      GOOS: linux
+      GOARCH: amd64
+      CGO_ENABLED: 0
     steps:
       - name: Checkout
         uses: actions/checkout@v3
       - uses: actions/setup-go@v3
         with:
-          go-version: ">=1.19.0"
+          go-version: ">=1.20.0"
       - name: Build v2ray
         shell: bash
         run: |
-          which docker || true;
-          curl -k -L --retry 10 --retry-max-time 1800 -o v2ray.Dockerfile https://raw.githubusercontent.com/owent-utils/docker-setup/main/setup-router/v2ray.Dockerfile
+          V2RAY_LATEST_VERSION=$(curl -L "-H Authorization: token $GITHUB_TOKEN" 'https://api.github.com/repos/v2fly/v2ray-core/releases/latest' | grep tag_name | grep -E -o 'v[0-9]+[0-9\.]+' | head -n 1)
+          git clone -b $V2RAY_LATEST_VERSION --depth 1 https://github.com/v2fly/v2ray-core.git v2ray-core
+          cd v2ray-core
+          sed -E 's;(build[[:space:]]*=[[:space:]]*").*";\1Build by OWenT";' core.go
+          go mod download
+          mkdir -p build_assets
+          go build -v -o build_assets/v2ray -trimpath -ldflags "-s -w -buildid=" ./main
+          mkdir -p ../dist/bin ../dist/etc ../dist/share
+          cp build_assets/v2ray ../dist/bin
+          cp release/config/config.json ../dist/etc
+          curl -k -qL "https://github.com/owent/update-geoip-geosite/releases/download/latest/geoip.dat" -o ../dist/bin/geoip.dat 
+          curl -k -qL "https://github.com/owent/update-geoip-geosite/releases/download/latest/geosite.dat" -o ../dist/bin/geosite.dat
+          curl -k -qL "https://raw.githubusercontent.com/v2fly/geoip/release/geoip-only-cn-private.dat" -o ../dist/bin/geoip-only-cn-private.dat
+          curl -k -qL "https://github.com/owent/update-geoip-geosite/releases/download/latest/all.tar.gz" -o ../dist/share/geo-all.tar.gz
+
+      - name: Build docker image
+        shell: bash
+        run: |
+          which docker || true
+          cd dist
+          cp ../Dockerfile ./
           echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "owt5008137" --password-stdin docker.io
-          docker build --build-arg GITHUB_TOKEN=${{ secrets.PRIVATE_GITHUB_TOKEN }} --force-rm --tag docker.io/owt5008137/proxy-with-geo:latest -f v2ray.Dockerfile .
+          docker build --build-arg GITHUB_TOKEN=${{ secrets.PRIVATE_GITHUB_TOKEN }} --force-rm --tag docker.io/owt5008137/proxy-with-geo:latest -f Dockerfile .
           docker push docker.io/owt5008137/proxy-with-geo:latest
       - name: Build smartdns
         shell: bash
         run: |
           which docker || true;
+          mkdir smartdns
+          cd smartdns
           curl -k -L --retry 10 --retry-max-time 1800 -o smartdns.Dockerfile https://raw.githubusercontent.com/owent-utils/docker-setup/main/setup-router/smartdns/smartdns.Dockerfile
           curl -k -L --retry 10 --retry-max-time 1800 -o smartdns.origin.conf https://raw.githubusercontent.com/owent-utils/docker-setup/main/setup-router/smartdns/smartdns.origin.conf
           echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "owt5008137" --password-stdin docker.io
@@ -45,10 +70,12 @@ jobs:
       - name: Build coredns
         shell: bash
         run: |
+          mkdir coredns
+          cd coredns
           GITHUB_TOKEN="${{ secrets.PRIVATE_GITHUB_TOKEN }}"
           [ "x$GITHUB_TOKEN" = "x" ] || GITHUB_TOKEN_ARGS="-H Authorization: token $GITHUB_TOKEN";
           COREDNS_LATEST_VERSION=$(curl -L $GITHUB_TOKEN_ARGS 'https://api.github.com/repos/coredns/coredns/releases/latest' | grep tag_name | grep -E -o 'v[0-9]+[0-9\.]+' | head -n 1)
-          git clone -b $COREDNS_LATEST_VERSION https://github.com/coredns/coredns.git
+          git clone -b $COREDNS_LATEST_VERSION --depth 1 https://github.com/coredns/coredns.git coredns
           cd coredns
           GITCOMMIT="$(git describe --dirty --always)"
           sed -i.bak -r '/alternate:.*/d' plugin.cfg
