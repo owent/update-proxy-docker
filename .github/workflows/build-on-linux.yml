@@ -33,7 +33,8 @@ jobs:
         shell: bash
         run: |
           GITHUB_TOKEN="${{ secrets.PRIVATE_GITHUB_TOKEN }}"
-          V2RAY_LATEST_VERSION=$(curl -L "-H Authorization: token $GITHUB_TOKEN" 'https://api.github.com/repos/v2fly/v2ray-core/releases/latest' | grep tag_name | grep -E -o 'v[0-9]+[0-9\.]+' | head -n 1)
+          [ "x$GITHUB_TOKEN" = "x" ] || GITHUB_TOKEN_ARGS="-H 'Authorization: token $GITHUB_TOKEN'";
+          V2RAY_LATEST_VERSION=$(curl -L $GITHUB_TOKEN_ARGS 'https://api.github.com/repos/v2fly/v2ray-core/releases/latest' | grep tag_name | grep -E -o 'v[0-9]+[0-9\.]+' | head -n 1)
           git clone -b $V2RAY_LATEST_VERSION --depth 1 https://github.com/v2fly/v2ray-core.git v2ray-core
           cd v2ray-core
           sed -E 's;(build[[:space:]]*=[[:space:]]*").*";\1Build by OWenT";' core.go
@@ -74,7 +75,7 @@ jobs:
           mkdir coredns
           cd coredns
           GITHUB_TOKEN="${{ secrets.PRIVATE_GITHUB_TOKEN }}"
-          [ "x$GITHUB_TOKEN" = "x" ] || GITHUB_TOKEN_ARGS="-H Authorization: token $GITHUB_TOKEN";
+          [ "x$GITHUB_TOKEN" = "x" ] || GITHUB_TOKEN_ARGS="-H 'Authorization: token $GITHUB_TOKEN'";
           COREDNS_LATEST_VERSION=$(curl -L $GITHUB_TOKEN_ARGS 'https://api.github.com/repos/coredns/coredns/releases/latest' | grep tag_name | grep -E -o 'v[0-9]+[0-9\.]+' | head -n 1)
           git clone -b $COREDNS_LATEST_VERSION --depth 1 https://github.com/coredns/coredns.git coredns
           cd coredns
