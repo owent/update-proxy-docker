@@ -114,7 +114,7 @@ jobs:
           sed -i.bak 's;FROM[[:space:]]+scratch;FROM debian:stable-slim;g' ../../../Dockerfile
           sed -i.bak 's;FROM[[:space:]]*--platform=$TARGETPLATFORM[[:space:]]*scratch;FROM debian:stable-slim;g' ../../../Dockerfile
           sed -i.bak 's;FROM[[:space:]]*--platform=$BUILDPLATFORM[[:space:]]*debian:stable-slim;FROM debian:stable-slim;g' ../../../Dockerfile
-          sed -i.bak 's;[[:space:]]*USER[[:space:]]*nonroot;# USER nonroot;g' ../../../Dockerfile
+          sed -i.bak 's;[[:space:]]*USER[[:space:]]*nonroot.*;USER root:root;g' ../../../Dockerfile
           docker build --force-rm --tag docker.io/owt5008137/coredns:latest -f ../../../Dockerfile .
           docker push docker.io/owt5008137/coredns:latest
   build_coredns_debug: # job id, can be any string
@@ -166,6 +166,6 @@ jobs:
           sed -i.bak 's;debian:stable-slim;debian:stable;g' ../../../Dockerfile
           sed -i.bak 's;FROM[[:space:]]*--platform=$TARGETPLATFORM[[:space:]]*scratch;FROM debian:stable;g' ../../../Dockerfile
           sed -i.bak 's;FROM[[:space:]]*--platform=$BUILDPLATFORM[[:space:]]*debian:stable;FROM debian:stable;g' ../../../Dockerfile
-          sed -i.bak 's;[[:space:]]*USER[[:space:]]*nonroot;# USER nonroot;g' ../../../Dockerfile
+          sed -i.bak 's;[[:space:]]*USER[[:space:]]*nonroot.*;USER root:root;g' ../../../Dockerfile
           docker build --force-rm --tag docker.io/owt5008137/coredns:debug -f ../../../Dockerfile .
           docker push docker.io/owt5008137/coredns:debug
