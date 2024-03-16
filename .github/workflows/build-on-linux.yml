@@ -11,7 +11,7 @@ on: # @see https://help.github.com/en/articles/events-that-trigger-workflows#web
     - cron: "46 2 * * 3"
 
 jobs:
-  build: # job id, can be any string
+  build_vproxy: # job id, can be any string
     # Job name is Build And Publish
     name: Build
     # This job runs on Linux
@@ -25,11 +25,11 @@ jobs:
       CGO_ENABLED: 0
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
-      - uses: actions/setup-go@v3
+        uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
         with:
           go-version: ">=1.20.0"
-      - name: Build v2ray
+      - name: Build vproxy
         shell: bash
         run: |
           GITHUB_TOKEN="${{ secrets.PRIVATE_GITHUB_TOKEN }}"
@@ -54,10 +54,65 @@ jobs:
         run: |
           which docker || true
           cd dist
-          cp ../Dockerfile ./
+          cp ../vproxy.Dockerfile ./
           echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "owt5008137" --password-stdin docker.io
-          docker build --build-arg GITHUB_TOKEN=${{ secrets.PRIVATE_GITHUB_TOKEN }} --force-rm --tag docker.io/owt5008137/proxy-with-geo:latest -f Dockerfile .
+          docker build --build-arg GITHUB_TOKEN=${{ secrets.PRIVATE_GITHUB_TOKEN }} --force-rm --tag docker.io/owt5008137/proxy-with-geo:latest -f vproxy.Dockerfile .
           docker push docker.io/owt5008137/proxy-with-geo:latest
+  build_vbox: # job id, can be any string
+    # Job name is Build And Publish
+    name: Build
+    # This job runs on Linux
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    env:
+      GOOS: linux
+      GOARCH: amd64
+      CGO_ENABLED: 0
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ">=1.20.0"
+      - name: Build vproxy
+        shell: bash
+        run: |
+          GITHUB_TOKEN="${{ secrets.PRIVATE_GITHUB_TOKEN }}"
+          [ "x$GITHUB_TOKEN" = "x" ] || GITHUB_TOKEN_ARGS="-H 'Authorization: token $GITHUB_TOKEN'";
+          SING_BOX_LATEST_VERSION=$(curl -L $GITHUB_TOKEN_ARGS 'https://api.github.com/repos/SagerNet/sing-box/releases/latest' | grep tag_name | grep -E -o 'v[0-9]+[0-9\.]+' | head -n 1)
+          git clone -b $SING_BOX_LATEST_VERSION --depth 1 https://github.com/SagerNet/sing-box.git sing-box
+          cd sing-box
+          sed -E -i.bak 's;sing-box version;vbox version;g' cmd/sing-box/cmd_version.go
+          sed -E -i.bak 's;version of sing-box;version of vbox;g' cmd/sing-box/cmd_version.go
+      - name: Build docker image
+        shell: bash
+        run: |
+          which docker || true
+          cd sing-box
+          cp ../vbox.Dockerfile ./
+          echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "owt5008137" --password-stdin docker.io
+          docker build --build-arg GITHUB_TOKEN=${{ secrets.PRIVATE_GITHUB_TOKEN }} --force-rm --tag docker.io/owt5008137/vbox:latest -f Dockerfile .
+          docker push docker.io/owt5008137/vbox:latest
+  build_dnsserver: # job id, can be any string
+    # Job name is Build And Publish
+    name: Build DNS Server
+    # This job runs on Linux
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    env:
+      GOOS: linux
+      GOARCH: amd64
+      CGO_ENABLED: 0
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ">=1.20.0"
       - name: Build smartdns
         shell: bash
         run: |
