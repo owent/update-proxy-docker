@@ -53,7 +53,7 @@ jobs:
           cd dist
           cp -f ../vproxy.Dockerfile ./
           echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "owt5008137" --password-stdin docker.io
-          docker build --build-arg GITHUB_TOKEN=${{ secrets.PRIVATE_GITHUB_TOKEN }} TARGETOS=linux TARGETARCH=amd64 --force-rm --tag docker.io/owt5008137/proxy-with-geo:latest -f vproxy.Dockerfile .
+          docker build --build-arg GITHUB_TOKEN=${{ secrets.PRIVATE_GITHUB_TOKEN }} --force-rm --tag docker.io/owt5008137/proxy-with-geo:latest -f vproxy.Dockerfile .
           docker push docker.io/owt5008137/proxy-with-geo:latest
   build_vbox: # job id, can be any string
     # Job name is Build And Publish
@@ -90,7 +90,7 @@ jobs:
           cd sing-box
           cp -f ../vbox.Dockerfile ./
           echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "owt5008137" --password-stdin docker.io
-          docker build --build-arg GITHUB_TOKEN=${{ secrets.PRIVATE_GITHUB_TOKEN }} --force-rm --tag docker.io/owt5008137/vbox:latest -f vbox.Dockerfile .
+          docker build --build-arg GITHUB_TOKEN=${{ secrets.PRIVATE_GITHUB_TOKEN }} --build-arg TARGETOS=linux --build-arg TARGETARCH=amd64 --force-rm --tag docker.io/owt5008137/vbox:latest -f vbox.Dockerfile .
           docker push docker.io/owt5008137/vbox:latest
   build_smartdns: # job id, can be any string
     # Job name is Build And Publish
