@@ -13,7 +13,7 @@ on: # @see https://help.github.com/en/articles/events-that-trigger-workflows#web
 jobs:
   build_vproxy: # job id, can be any string
     # Job name is Build And Publish
-    name: Build geoip and geosite
+    name: Build vproxy
     # This job runs on Linux
     runs-on: ubuntu-latest
     env:
@@ -50,13 +50,14 @@ jobs:
         shell: bash
         run: |
           which docker || true
+          cd dist
           cp -f ../vproxy.Dockerfile ./
           echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "owt5008137" --password-stdin docker.io
           docker build --build-arg GITHUB_TOKEN=${{ secrets.PRIVATE_GITHUB_TOKEN }} TARGETOS=linux TARGETARCH=amd64 --force-rm --tag docker.io/owt5008137/proxy-with-geo:latest -f vproxy.Dockerfile .
           docker push docker.io/owt5008137/proxy-with-geo:latest
   build_vbox: # job id, can be any string
     # Job name is Build And Publish
-    name: Build
+    name: Build vbox
     # This job runs on Linux
     strategy:
       matrix:
@@ -93,7 +94,7 @@ jobs:
           docker push docker.io/owt5008137/vbox:latest
   build_smartdns: # job id, can be any string
     # Job name is Build And Publish
-    name: Build DNS Server
+    name: Build smartdns
     # This job runs on Linux
     strategy:
       matrix:
