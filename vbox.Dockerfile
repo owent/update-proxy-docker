@@ -24,4 +24,6 @@ RUN set -ex \
   && apk add bash tzdata ca-certificates \
   && rm -rf /var/cache/apk/*
 COPY --from=builder /go/bin/vbox /usr/local/bin/vbox
+COPY data/share/sing-geosite /usr/share/vbox/geosite
+COPY data/share/sing-geoip /usr/share/vbox/geoip
 ENTRYPOINT ["vbox"]

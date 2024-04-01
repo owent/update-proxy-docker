@@ -68,8 +68,20 @@ jobs:
       GOARCH: amd64
       CGO_ENABLED: 0
     steps:
-      - name: Checkout
+      - name: Checkout sing-box
         uses: actions/checkout@v4
+      - name: Checkout geosite
+        uses: actions/checkout@v4
+        with:
+          repository: "SagerNet/sing-geosite"
+          path: "sing-geosite"
+          ref: "rule-set"
+      - name: Checkout geoip
+        uses: actions/checkout@v4
+        with:
+          repository: "SagerNet/sing-geoip"
+          path: "sing-geoip"
+          ref: "rule-set"
       - uses: actions/setup-go@v5
         with:
           go-version: ">=1.21.0"
@@ -88,6 +100,9 @@ jobs:
         run: |
           which docker || true
           cd sing-box
+          mkdir -p data/share
+          cp -rfv ../sing-geosite data/share/
+          cp -rfv ../sing-geoip data/share/
           cp -f ../vbox.Dockerfile ./
           echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "owt5008137" --password-stdin docker.io
           docker build --build-arg GITHUB_TOKEN=${{ secrets.PRIVATE_GITHUB_TOKEN }} --build-arg TARGETOS=linux --build-arg TARGETARCH=amd64 --force-rm --tag docker.io/owt5008137/vbox:latest -f vbox.Dockerfile .
