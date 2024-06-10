@@ -107,6 +107,10 @@ jobs:
           echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "owt5008137" --password-stdin docker.io
           docker build --build-arg GITHUB_TOKEN=${{ secrets.PRIVATE_GITHUB_TOKEN }} --build-arg TARGETOS=linux --build-arg TARGETARCH=amd64 --force-rm --tag docker.io/owt5008137/vbox:latest -f vbox.Dockerfile .
           docker push docker.io/owt5008137/vbox:latest
+
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+          docker tag docker.io/owt5008137/vbox:latest ghcr.io/owent/vbox:latest
+          docker push ghcr.io/owent/vbox:latest
   build_smartdns: # job id, can be any string
     # Job name is Build And Publish
     name: Build smartdns
