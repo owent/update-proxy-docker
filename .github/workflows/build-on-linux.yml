@@ -113,10 +113,10 @@ jobs:
           echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "owt5008137" --password-stdin docker.io
           docker build --build-arg GITHUB_TOKEN=${{ secrets.PRIVATE_GITHUB_TOKEN }} --build-arg TARGETOS=linux --build-arg TARGETARCH=amd64 --force-rm --tag docker.io/owt5008137/vbox:latest -f vbox.Dockerfile .
           docker push docker.io/owt5008137/vbox:latest
-
+          # Github package
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-          docker tag docker.io/owt5008137/vbox:latest ghcr.io/owent/vbox:latest
-          docker push ghcr.io/owent/vbox:latest
+          docker tag docker.io/owt5008137/vbox:latest ghcr.io/${{ github.repository_owner }}/vbox:latest
+          docker push ghcr.io/${{ github.repository_owner }}/vbox:latest
   build_smartdns: # job id, can be any string
     # Job name is Build And Publish
     name: Build smartdns
@@ -197,6 +197,10 @@ jobs:
           sed -i.bak 's;[[:space:]]*USER[[:space:]]*nonroot.*;USER root:root;g' ../../../Dockerfile
           docker build --force-rm --tag docker.io/owt5008137/coredns:latest -f ../../../Dockerfile .
           docker push docker.io/owt5008137/coredns:latest
+          # Github package
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+          docker tag docker.io/owt5008137/coredns:latest ghcr.io/${{ github.repository_owner }}/coredns:latest
+          docker push ghcr.io/${{ github.repository_owner }}/coredns:latest
   build_coredns_debug: # job id, can be any string
     # Job name is Build And Publish
     name: Build coredns (debug)
@@ -249,3 +253,7 @@ jobs:
           sed -i.bak 's;[[:space:]]*USER[[:space:]]*nonroot.*;USER root:root;g' ../../../Dockerfile
           docker build --force-rm --tag docker.io/owt5008137/coredns:debug -f ../../../Dockerfile .
           docker push docker.io/owt5008137/coredns:debug
+          # Github package
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+          docker tag docker.io/owt5008137/coredns:debug ghcr.io/${{ github.repository_owner }}/coredns:debug
+          docker push ghcr.io/${{ github.repository_owner }}/coredns:debug
