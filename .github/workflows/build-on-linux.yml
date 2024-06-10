@@ -99,10 +99,16 @@ jobs:
         shell: bash
         run: |
           which docker || true
+          SING_GEOIP_LATEST_VERSION=$(curl -L $GITHUB_TOKEN_ARGS 'https://api.github.com/repos/SagerNet/sing-geoip/releases/latest' | grep tag_name | grep -E -o '[0-9]+[0-9\.]+' | head -n 1)
+          SING_GEOSITE_LATEST_VERSION=$(curl -L $GITHUB_TOKEN_ARGS 'https://api.github.com/repos/SagerNet/sing-geosite/releases/latest' | grep tag_name | grep -E -o '[0-9]+[0-9\.]+' | head -n 1)
           cd sing-box
           mkdir -p data/share
           cp -rfv ../sing-geosite data/share/
           cp -rfv ../sing-geoip data/share/
+          curl -k -L --retry 3 --retry-max-time 1800 https://github.com/SagerNet/sing-geoip/releases/download/$SING_GEOIP_LATEST_VERSION/geoip.db -o data/share/geoip.db
+          curl -k -L --retry 3 --retry-max-time 1800 https://github.com/SagerNet/sing-geoip/releases/download/$SING_GEOIP_LATEST_VERSION/geoip-cn.db -o data/share/geoip-cn.db
+          curl -k -L --retry 3 --retry-max-time 1800 https://github.com/SagerNet/sing-geosite/releases/download/$SING_GEOSITE_LATEST_VERSION/geosite.db -o data/share/geosite.db
+          curl -k -L --retry 3 --retry-max-time 1800 https://github.com/SagerNet/sing-geosite/releases/download/$SING_GEOSITE_LATEST_VERSION/geosite-cn.db -o data/share/geosite-cn.db
           cp -f ../vbox.Dockerfile ./
           echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "owt5008137" --password-stdin docker.io
           docker build --build-arg GITHUB_TOKEN=${{ secrets.PRIVATE_GITHUB_TOKEN }} --build-arg TARGETOS=linux --build-arg TARGETARCH=amd64 --force-rm --tag docker.io/owt5008137/vbox:latest -f vbox.Dockerfile .

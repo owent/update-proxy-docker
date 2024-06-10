@@ -26,4 +26,5 @@ RUN set -ex \
 COPY --from=builder /go/bin/vbox /usr/local/bin/vbox
 COPY data/share/sing-geosite /usr/share/vbox/geosite
 COPY data/share/sing-geoip /usr/share/vbox/geoip
+COPY data/share/geoip.db data/share/geoip-cn.db data/share/geosite.db data/share/geosite-cn.db /usr/share/vbox/
 ENTRYPOINT ["vbox"]
