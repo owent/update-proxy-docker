@@ -1,4 +1,4 @@
-FROM docker.io/alpine:latest
+FROM alpine:latest
 
 LABEL maintainer "OWenT <admin@owent.net>"
 
