@@ -31,7 +31,7 @@ jobs:
         run: |
           GITHUB_TOKEN="${{ secrets.PRIVATE_GITHUB_TOKEN }}"
           [ "x$GITHUB_TOKEN" = "x" ] || GITHUB_TOKEN_ARGS=("-H" 'Authorization: token $GITHUB_TOKEN')
-          V2RAY_LATEST_VERSION=$(curl -L ${GITHUB_TOKEN_ARGS[@]} 'https://api.github.com/repos/v2fly/v2ray-core/releases?page=1&per_page=1' | grep tag_name | grep -E -o 'v[0-9]+[0-9\.]+' | head -n 1)
+          V2RAY_LATEST_VERSION=$(curl -L "${GITHUB_TOKEN_ARGS[@]}" 'https://api.github.com/repos/v2fly/v2ray-core/releases?page=1&per_page=1' | grep tag_name | grep -E -o 'v[0-9]+[0-9\.]+' | head -n 1)
           git clone -b $V2RAY_LATEST_VERSION --depth 1 https://github.com/v2fly/v2ray-core.git v2ray-core
           cd v2ray-core
           sed -E -i.bak 's;(build[[:space:]]*=[[:space:]]*").*";\1Build by OWenT";' core.go
@@ -114,7 +114,7 @@ jobs:
         run: |
           GITHUB_TOKEN="${{ secrets.PRIVATE_GITHUB_TOKEN }}"
           [ "x$GITHUB_TOKEN" = "x" ] || GITHUB_TOKEN_ARGS=("-H" 'Authorization: token $GITHUB_TOKEN')
-          SING_BOX_LATEST_VERSION=$(curl -L ${GITHUB_TOKEN_ARGS[@]} 'https://api.github.com/repos/SagerNet/sing-box/releases/latest' | grep tag_name | grep -E -o 'v[0-9]+[0-9\.]+' | head -n 1)
+          SING_BOX_LATEST_VERSION=$(curl -L "${GITHUB_TOKEN_ARGS[@]}" 'https://api.github.com/repos/SagerNet/sing-box/releases/latest' | grep tag_name | grep -E -o 'v[0-9]+[0-9\.]+' | head -n 1)
           git clone -b $SING_BOX_LATEST_VERSION --depth 1 https://github.com/SagerNet/sing-box.git sing-box
           cd sing-box
           sed -E -i.bak 's;sing-box version;vbox version;g' cmd/sing-box/cmd_version.go
@@ -124,8 +124,8 @@ jobs:
         run: |
           which docker || true
           [ "x$GITHUB_TOKEN" = "x" ] || GITHUB_TOKEN_ARGS=("-H" 'Authorization: token $GITHUB_TOKEN')
-          SING_GEOIP_LATEST_VERSION=$(curl -L ${GITHUB_TOKEN_ARGS[@]} 'https://api.github.com/repos/SagerNet/sing-geoip/releases/latest' | grep tag_name | grep -E -o '[0-9]+[0-9\.]+' | head -n 1)
-          SING_GEOSITE_LATEST_VERSION=$(curl -L ${GITHUB_TOKEN_ARGS[@]} 'https://api.github.com/repos/SagerNet/sing-geosite/releases/latest' | grep tag_name | grep -E -o '[0-9]+[0-9\.]+' | head -n 1)
+          SING_GEOIP_LATEST_VERSION=$(curl -L "${GITHUB_TOKEN_ARGS[@]}" 'https://api.github.com/repos/SagerNet/sing-geoip/releases/latest' | grep tag_name | grep -E -o '[0-9]+[0-9\.]+' | head -n 1)
+          SING_GEOSITE_LATEST_VERSION=$(curl -L "${GITHUB_TOKEN_ARGS[@]}" 'https://api.github.com/repos/SagerNet/sing-geosite/releases/latest' | grep tag_name | grep -E -o '[0-9]+[0-9\.]+' | head -n 1)
           cd sing-box
           mkdir -p data/share/sing-geoip data/share/sing-geosite
           echo "======================== Copy files from sing-geoip ========================"
@@ -230,7 +230,7 @@ jobs:
           cd coredns
           GITHUB_TOKEN="${{ secrets.PRIVATE_GITHUB_TOKEN }}"
           [ "x$GITHUB_TOKEN" = "x" ] || GITHUB_TOKEN_ARGS=("-H" 'Authorization: token $GITHUB_TOKEN')
-          COREDNS_LATEST_VERSION=$(curl -L ${GITHUB_TOKEN_ARGS[@]} 'https://api.github.com/repos/coredns/coredns/releases/latest' | grep tag_name | grep -E -o 'v[0-9]+[0-9\.]+' | head -n 1)
+          COREDNS_LATEST_VERSION=$(curl -L "${GITHUB_TOKEN_ARGS[@]}" 'https://api.github.com/repos/coredns/coredns/releases/latest' | grep tag_name | grep -E -o 'v[0-9]+[0-9\.]+' | head -n 1)
           git clone -b $COREDNS_LATEST_VERSION --depth 1 https://github.com/coredns/coredns.git coredns
           cd coredns
           GITCOMMIT="$(git describe --dirty --always)"
@@ -285,7 +285,7 @@ jobs:
           cd coredns
           GITHUB_TOKEN="${{ secrets.PRIVATE_GITHUB_TOKEN }}"
           [ "x$GITHUB_TOKEN" = "x" ] || GITHUB_TOKEN_ARGS=("-H" 'Authorization: token $GITHUB_TOKEN')
-          COREDNS_LATEST_VERSION=$(curl -L ${GITHUB_TOKEN_ARGS[@]} 'https://api.github.com/repos/coredns/coredns/releases/latest' | grep tag_name | grep -E -o 'v[0-9]+[0-9\.]+' | head -n 1)
+          COREDNS_LATEST_VERSION=$(curl -L "${GITHUB_TOKEN_ARGS[@]}" 'https://api.github.com/repos/coredns/coredns/releases/latest' | grep tag_name | grep -E -o 'v[0-9]+[0-9\.]+' | head -n 1)
           git clone -b $COREDNS_LATEST_VERSION --depth 1 https://github.com/coredns/coredns.git coredns
           cd coredns
           GITCOMMIT="$(git describe --dirty --always)"
