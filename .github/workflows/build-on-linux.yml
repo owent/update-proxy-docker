@@ -29,8 +29,8 @@ jobs:
       - name: Build vproxy
         shell: bash
         run: |
-          GITHUB_TOKEN="${{ secrets.PRIVATE_GITHUB_TOKEN }}"
-          [ "x$GITHUB_TOKEN" = "x" ] || GITHUB_TOKEN_ARGS=("-H" 'Authorization: token $GITHUB_TOKEN')
+          GITHUB_TOKEN="${{ secrets.GITHUB_TOKEN }}"
+          [ "x$GITHUB_TOKEN" = "x" ] || GITHUB_TOKEN_ARGS=("-H" "Authorization: Bearer $GITHUB_TOKEN")
           V2RAY_LATEST_VERSION=$(curl -L "${GITHUB_TOKEN_ARGS[@]}" 'https://api.github.com/repos/v2fly/v2ray-core/releases?page=1&per_page=1' | grep tag_name | grep -E -o 'v[0-9]+[0-9\.]+' | head -n 1)
           git clone -b $V2RAY_LATEST_VERSION --depth 1 https://github.com/v2fly/v2ray-core.git v2ray-core
           cd v2ray-core
@@ -53,7 +53,7 @@ jobs:
           cd dist
           cp -f ../vproxy.Dockerfile ./
           echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "owt5008137" --password-stdin docker.io
-          docker build --build-arg GITHUB_TOKEN=${{ secrets.PRIVATE_GITHUB_TOKEN }} --force-rm --tag docker.io/owt5008137/proxy-with-geo:latest -f vproxy.Dockerfile .
+          docker build --build-arg GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} --force-rm --tag docker.io/owt5008137/proxy-with-geo:latest -f vproxy.Dockerfile .
           docker push docker.io/owt5008137/proxy-with-geo:latest
   build_vbox: # job id, can be any string
     # Job name is Build And Publish
@@ -112,8 +112,8 @@ jobs:
       - name: Build vproxy
         shell: bash
         run: |
-          GITHUB_TOKEN="${{ secrets.PRIVATE_GITHUB_TOKEN }}"
-          [ "x$GITHUB_TOKEN" = "x" ] || GITHUB_TOKEN_ARGS=("-H" 'Authorization: token $GITHUB_TOKEN')
+          GITHUB_TOKEN="${{ secrets.GITHUB_TOKEN }}"
+          [ "x$GITHUB_TOKEN" = "x" ] || GITHUB_TOKEN_ARGS=("-H" "Authorization: Bearer $GITHUB_TOKEN")
           SING_BOX_LATEST_VERSION=$(curl -L "${GITHUB_TOKEN_ARGS[@]}" 'https://api.github.com/repos/SagerNet/sing-box/releases/latest' | grep tag_name | grep -E -o 'v[0-9]+[0-9\.]+' | head -n 1)
           git clone -b $SING_BOX_LATEST_VERSION --depth 1 https://github.com/SagerNet/sing-box.git sing-box
           cd sing-box
@@ -123,7 +123,8 @@ jobs:
         shell: bash
         run: |
           which docker || true
-          [ "x$GITHUB_TOKEN" = "x" ] || GITHUB_TOKEN_ARGS=("-H" 'Authorization: token $GITHUB_TOKEN')
+          GITHUB_TOKEN="${{ secrets.GITHUB_TOKEN }}"
+          [ "x$GITHUB_TOKEN" = "x" ] || GITHUB_TOKEN_ARGS=("-H" "Authorization: Bearer $GITHUB_TOKEN")
           SING_GEOIP_LATEST_VERSION=$(curl -L "${GITHUB_TOKEN_ARGS[@]}" 'https://api.github.com/repos/SagerNet/sing-geoip/releases/latest' | grep tag_name | grep -E -o '[0-9]+[0-9\.]+' | head -n 1)
           SING_GEOSITE_LATEST_VERSION=$(curl -L "${GITHUB_TOKEN_ARGS[@]}" 'https://api.github.com/repos/SagerNet/sing-geosite/releases/latest' | grep tag_name | grep -E -o '[0-9]+[0-9\.]+' | head -n 1)
           cd sing-box
@@ -173,7 +174,7 @@ jobs:
           # Patch srs from https://github.com/Loyalsoldier/geoip/tree/release/srs and https://github.com/Loyalsoldier/geosite/tree/release/srs
           cp -f ../vbox.Dockerfile ./
           echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "owt5008137" --password-stdin docker.io
-          docker build --build-arg GITHUB_TOKEN=${{ secrets.PRIVATE_GITHUB_TOKEN }} --build-arg TARGETOS=linux --build-arg TARGETARCH=amd64 --force-rm --tag docker.io/owt5008137/vbox:latest -f vbox.Dockerfile .
+          docker build --build-arg GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} --build-arg TARGETOS=linux --build-arg TARGETARCH=amd64 --force-rm --tag docker.io/owt5008137/vbox:latest -f vbox.Dockerfile .
           docker push docker.io/owt5008137/vbox:latest
           # Github package
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
@@ -206,7 +207,7 @@ jobs:
           curl -k -L --retry 10 --retry-max-time 1800 -o smartdns.Dockerfile https://raw.githubusercontent.com/owent-utils/docker-setup/main/setup-router/smartdns/smartdns.Dockerfile
           curl -k -L --retry 10 --retry-max-time 1800 -o smartdns.origin.conf https://raw.githubusercontent.com/owent-utils/docker-setup/main/setup-router/smartdns/smartdns.origin.conf
           echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "owt5008137" --password-stdin docker.io
-          docker build --build-arg GITHUB_TOKEN=${{ secrets.PRIVATE_GITHUB_TOKEN }} --force-rm --tag docker.io/owt5008137/smartdns:latest -f smartdns.Dockerfile .
+          docker build --build-arg GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} --force-rm --tag docker.io/owt5008137/smartdns:latest -f smartdns.Dockerfile .
           docker push docker.io/owt5008137/smartdns:latest
   build_coredns_release: # job id, can be any string
     # Job name is Build And Publish
@@ -228,8 +229,8 @@ jobs:
         run: |
           mkdir coredns
           cd coredns
-          GITHUB_TOKEN="${{ secrets.PRIVATE_GITHUB_TOKEN }}"
-          [ "x$GITHUB_TOKEN" = "x" ] || GITHUB_TOKEN_ARGS=("-H" 'Authorization: token $GITHUB_TOKEN')
+          GITHUB_TOKEN="${{ secrets.GITHUB_TOKEN }}"
+          [ "x$GITHUB_TOKEN" = "x" ] || GITHUB_TOKEN_ARGS=("-H" "Authorization: Bearer $GITHUB_TOKEN")
           COREDNS_LATEST_VERSION=$(curl -L "${GITHUB_TOKEN_ARGS[@]}" 'https://api.github.com/repos/coredns/coredns/releases/latest' | grep tag_name | grep -E -o 'v[0-9]+[0-9\.]+' | head -n 1)
           git clone -b $COREDNS_LATEST_VERSION --depth 1 https://github.com/coredns/coredns.git coredns
           cd coredns
@@ -283,8 +284,8 @@ jobs:
         run: |
           mkdir coredns
           cd coredns
-          GITHUB_TOKEN="${{ secrets.PRIVATE_GITHUB_TOKEN }}"
-          [ "x$GITHUB_TOKEN" = "x" ] || GITHUB_TOKEN_ARGS=("-H" 'Authorization: token $GITHUB_TOKEN')
+          GITHUB_TOKEN="${{ secrets.GITHUB_TOKEN }}"
+          [ "x$GITHUB_TOKEN" = "x" ] || GITHUB_TOKEN_ARGS=("-H" "Authorization: Bearer $GITHUB_TOKEN")
           COREDNS_LATEST_VERSION=$(curl -L "${GITHUB_TOKEN_ARGS[@]}" 'https://api.github.com/repos/coredns/coredns/releases/latest' | grep tag_name | grep -E -o 'v[0-9]+[0-9\.]+' | head -n 1)
           git clone -b $COREDNS_LATEST_VERSION --depth 1 https://github.com/coredns/coredns.git coredns
           cd coredns
