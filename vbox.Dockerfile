@@ -9,12 +9,12 @@ ENV GOPROXY ${GOPROXY}
 ENV CGO_ENABLED=0
 ENV GOOS=$TARGETOS
 ENV GOARCH=$TARGETARCH
+RUN apk add git build-base
 RUN set -ex \
-  && apk add git build-base \
   && export COMMIT=$(git rev-parse --short HEAD) \
   && export VERSION=$(go run ./cmd/internal/read_tag) \
   && go build -v -trimpath -tags \
-  "with_gvisor,with_quic,with_dhcp,with_wireguard,with_ech,with_utls,with_reality_server,with_acme,with_clash_api" \
+  "with_gvisor,with_quic,with_dhcp,with_wireguard,with_utls,with_acme,with_clash_api,with_tailscale" \
   -o /go/bin/vbox \
   -ldflags "-X \"github.com/sagernet/sing-box/constant.Version=$VERSION\" -s -w -buildid=" \
   ./cmd/sing-box
