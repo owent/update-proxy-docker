@@ -88,24 +88,18 @@ jobs:
           repository: "Loyalsoldier/geoip"
           path: "Loyalsoldier-geoip"
           ref: "release"
+      - name: Checkout Chocolate4U/Iran-sing-box-rules
+        uses: actions/checkout@v6
+        with:
+          repository: "Chocolate4U/Iran-sing-box-rules"
+          path: "Chocolate4U-sing-box-rules"
+          ref: "rule-set"
       - name: Checkout DustinWin-geosite
         uses: actions/checkout@v6
         with:
           repository: "DustinWin/ruleset_geodata"
           path: "DustinWin-geosite"
           ref: "sing-box-ruleset"
-      - name: Checkout lyc8503-geosite
-        uses: actions/checkout@v6
-        with:
-          repository: "lyc8503/sing-box-rules"
-          path: "lyc8503-geosite"
-          ref: "rule-set-geosite"
-      - name: Checkout lyc8503-geoip
-        uses: actions/checkout@v6
-        with:
-          repository: "lyc8503/sing-box-rules"
-          path: "lyc8503-geoip"
-          ref: "rule-set-geoip"
       - uses: actions/setup-go@v5
         with:
           go-version: ">=1.24.0"
@@ -127,12 +121,15 @@ jobs:
           [ "x$GITHUB_TOKEN" = "x" ] || GITHUB_TOKEN_ARGS=("-H" "Authorization: Bearer $GITHUB_TOKEN")
           SING_GEOIP_LATEST_VERSION=$(curl -L "${GITHUB_TOKEN_ARGS[@]}" 'https://api.github.com/repos/SagerNet/sing-geoip/releases/latest' | grep tag_name | grep -E -o '[0-9]+[0-9\.]+' | head -n 1)
           SING_GEOSITE_LATEST_VERSION=$(curl -L "${GITHUB_TOKEN_ARGS[@]}" 'https://api.github.com/repos/SagerNet/sing-geosite/releases/latest' | grep tag_name | grep -E -o '[0-9]+[0-9\.]+' | head -n 1)
+          SING_RULES_CHOCOLATE4U_IRAN_RULES_LATEST_VERSION=$(curl -L "${GITHUB_TOKEN_ARGS[@]}" 'https://api.github.com/repos/Chocolate4U/Iran-sing-box-rules/releases/latest' | grep tag_name | grep -E -o '[0-9]+[0-9\.]+' | head -n 1)
+          SING_GEOIP_SOFFCHEN_LATEST_VERSION=$(curl -L "${GITHUB_TOKEN_ARGS[@]}" 'https://api.github.com/repos/soffchen/sing-geoip/releases/latest' | grep tag_name | grep -E -o '[0-9]+[0-9\.]+' | head -n 1)
+          SING_GEOSITE_SOFFCHEN_LATEST_VERSION=$(curl -L "${GITHUB_TOKEN_ARGS[@]}" 'https://api.github.com/repos/soffchen/sing-geosite/releases/latest' | grep tag_name | grep -E -o '[0-9]+[0-9\.]+' | head -n 1)
           cd sing-box
           mkdir -p data/share/sing-geoip data/share/sing-geosite
-          echo "======================== Copy files from lyc8503-geoip ========================"
-          cp -rfv ../lyc8503-geoip/*.srs data/share/sing-geoip/
-          echo "======================== Copy files from lyc8503-geosite ========================"
-          cp -rfv ../lyc8503-geosite/*.srs data/share/sing-geosite/
+          echo "======================== Copy files from Chocolate4U-sing-box-rules ========================"
+          cp -rfv ../Chocolate4U-sing-box-rules/geoip-*.srs data/share/sing-geoip/
+          echo "======================== Copy files from Chocolate4U-sing-box-rules ========================"
+          cp -rfv ../Chocolate4U-sing-box-rules/geosite-*.srs data/share/sing-geosite/
           echo "======================== Copy files from sing-geoip ========================"
           cp -rfv ../sing-geoip/*.srs data/share/sing-geoip/
           echo "======================== Copy files from sing-geosite ========================"
@@ -164,12 +161,16 @@ jobs:
             fi
           done
           echo "======================== Download geoip.db and geosite.db ========================"
-          curl -k -L --retry 3 --retry-max-time 1800 https://github.com/SagerNet/sing-geoip/releases/download/$SING_GEOIP_LATEST_VERSION/geoip.db -o data/share/geoip.db || \
-            curl -k -L --retry 3 --retry-max-time 1800 https://github.com/lyc8503/sing-box-rules/releases/latest/download/geoip.db -o data/share/geoip.db
-          curl -k -L --retry 3 --retry-max-time 1800 https://github.com/SagerNet/sing-geoip/releases/download/$SING_GEOIP_LATEST_VERSION/geoip-cn.db -o data/share/geoip-cn.db || \
-            curl -k -L --retry 3 --retry-max-time 1800 https://github.com/lyc8503/sing-box-rules/releases/latest/download/geoip-cn.db -o data/share/geoip-cn.db
-          curl -k -L --retry 3 --retry-max-time 1800 https://github.com/SagerNet/sing-geosite/releases/download/$SING_GEOSITE_LATEST_VERSION/geosite.db -o data/share/geosite.db || \
-            curl -k -L --retry 3 --retry-max-time 1800 https://github.com/lyc8503/sing-box-rules/releases/latest/download/geosite.db -o data/share/geosite.db
+          curl -k -L --retry 3 --retry-max-time 1800 https://github.com/Chocolate4U/Iran-sing-box-rules/releases/download/$SING_RULES_CHOCOLATE4U_IRAN_RULES_LATEST_VERSION/geoip.db -o data/share/geoip.db || \
+            curl -k -L --retry 3 --retry-max-time 1800 https://github.com/soffchen/sing-geoip/releases/download/$SING_GEOIP_SOFFCHEN_LATEST_VERSION/geoip.db -o data/share/geoip.db || \
+            curl -k -L --retry 3 --retry-max-time 1800 https://github.com/SagerNet/sing-geoip/releases/download/$SING_GEOIP_LATEST_VERSION/geoip.db -o data/share/geoip.db
+          curl -k -L --retry 3 --retry-max-time 1800 https://github.com/soffchen/sing-geoip/releases/download/$SING_GEOIP_SOFFCHEN_LATEST_VERSION/geoip-cn.db -o data/share/geoip-cn.db || \
+            curl -k -L --retry 3 --retry-max-time 1800 https://github.com/SagerNet/sing-geoip/releases/download/$SING_GEOIP_LATEST_VERSION/geoip-cn.db -o data/share/geoip-cn.db
+          curl -k -L --retry 3 --retry-max-time 1800 https://github.com/Chocolate4U/Iran-sing-box-rules/releases/download/$SING_RULES_CHOCOLATE4U_IRAN_RULES_LATEST_VERSION/geoip-lite.db -o data/share/geoip-lite.db
+          curl -k -L --retry 3 --retry-max-time 1800 https://github.com/Chocolate4U/Iran-sing-box-rules/releases/download/$SING_RULES_CHOCOLATE4U_IRAN_RULES_LATEST_VERSION/geosite.db -o data/share/geosite.db || \\
+            curl -k -L --retry 3 --retry-max-time 1800 https://github.com/soffchen/sing-geosite/releases/download/$SING_GEOSITE_SOFFCHEN_LATEST_VERSION/geosite.db -o data/share/geosite.db || \\
+            curl -k -L --retry 3 --retry-max-time 1800 https://github.com/SagerNet/sing-geosite/releases/download/$SING_GEOSITE_LATEST_VERSION/geosite.db -o data/share/geosite.db
+          curl -k -L --retry 3 --retry-max-time 1800 https://github.com/Chocolate4U/Iran-sing-box-rules/releases/download/$SING_RULES_CHOCOLATE4U_IRAN_RULES_LATEST_VERSION/geosite-lite.db -o data/share/geosite-lite.db
           curl -k -L --retry 3 --retry-max-time 1800 https://github.com/SagerNet/sing-geosite/releases/download/$SING_GEOSITE_LATEST_VERSION/geosite-cn.db -o data/share/geosite-cn.db
           # Patch srs from https://github.com/Loyalsoldier/geoip/tree/release/srs and https://github.com/Loyalsoldier/geosite/tree/release/srs
           cp -f ../vbox.Dockerfile ./
