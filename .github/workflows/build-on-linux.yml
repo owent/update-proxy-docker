@@ -1,8 +1,10 @@
 name: "Build On Linux"
 
-on: # @see https://help.github.com/en/articles/events-that-trigger-workflows#webhook-events
+on:
+  # @see https://help.github.com/en/articles/events-that-trigger-workflows#webhook-events
   push:
-    branches: # Array of patterns that match refs/heads
+    branches:
+      # Array of patterns that match refs/heads
       - main
     tags:
       - "*"
@@ -11,7 +13,8 @@ on: # @see https://help.github.com/en/articles/events-that-trigger-workflows#web
     - cron: "46 2 * * 3"
 
 jobs:
-  build_vproxy: # job id, can be any string
+  build_vproxy:
+    # job id, can be any string
     # Job name is Build And Publish
     name: Build vproxy
     # This job runs on Linux
@@ -55,13 +58,14 @@ jobs:
           echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "owt5008137" --password-stdin docker.io
           docker build --build-arg GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} --force-rm --tag docker.io/owt5008137/proxy-with-geo:latest -f vproxy.Dockerfile .
           docker push docker.io/owt5008137/proxy-with-geo:latest
-  build_vbox: # job id, can be any string
+  build_vbox:
+    # job id, can be any string
     # Job name is Build And Publish
     name: Build vbox
     # This job runs on Linux
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [ ubuntu-latest ]
     runs-on: ${{ matrix.os }}
     env:
       GOOS: linux
@@ -210,7 +214,8 @@ jobs:
   #         echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "owt5008137" --password-stdin docker.io
   #         docker build --build-arg GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} --force-rm --tag docker.io/owt5008137/smartdns:latest -f smartdns.Dockerfile .
   #         docker push docker.io/owt5008137/smartdns:latest
-  build_coredns_release: # job id, can be any string
+  build_coredns_release:
+    # job id, can be any string
     # Job name is Build And Publish
     name: Build coredns (release)
     # This job runs on Linux
@@ -233,6 +238,7 @@ jobs:
           GITHUB_TOKEN="${{ secrets.GITHUB_TOKEN }}"
           [ "x$GITHUB_TOKEN" = "x" ] || GITHUB_TOKEN_ARGS=("-H" "Authorization: Bearer $GITHUB_TOKEN")
           COREDNS_LATEST_VERSION=$(curl -L "${GITHUB_TOKEN_ARGS[@]}" 'https://api.github.com/repos/coredns/coredns/releases/latest' | grep tag_name | grep -E -o 'v[0-9]+[0-9\.]+' | head -n 1)
+          set -x
           git clone -b $COREDNS_LATEST_VERSION --depth 1 https://github.com/coredns/coredns.git coredns
           cd coredns
           GITCOMMIT="$(git describe --dirty --always)"
@@ -265,7 +271,8 @@ jobs:
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
           docker tag docker.io/owt5008137/coredns:latest ghcr.io/${{ github.repository_owner }}/coredns:latest
           docker push ghcr.io/${{ github.repository_owner }}/coredns:latest
-  build_coredns_debug: # job id, can be any string
+  build_coredns_debug:
+    # job id, can be any string
     # Job name is Build And Publish
     name: Build coredns (debug)
     # This job runs on Linux
@@ -288,6 +295,7 @@ jobs:
           GITHUB_TOKEN="${{ secrets.GITHUB_TOKEN }}"
           [ "x$GITHUB_TOKEN" = "x" ] || GITHUB_TOKEN_ARGS=("-H" "Authorization: Bearer $GITHUB_TOKEN")
           COREDNS_LATEST_VERSION=$(curl -L "${GITHUB_TOKEN_ARGS[@]}" 'https://api.github.com/repos/coredns/coredns/releases/latest' | grep tag_name | grep -E -o 'v[0-9]+[0-9\.]+' | head -n 1)
+          set -x
           git clone -b $COREDNS_LATEST_VERSION --depth 1 https://github.com/coredns/coredns.git coredns
           cd coredns
           GITCOMMIT="$(git describe --dirty --always)"
