@@ -22,7 +22,9 @@ jobs:
       coredns_version: ${{ steps.fetch_versions.outputs.coredns_version }}
       sing_geoip_version: ${{ steps.fetch_versions.outputs.sing_geoip_version }}
       sing_geosite_version: ${{ steps.fetch_versions.outputs.sing_geosite_version }}
-      sing_rules_chocolate4u_iran_rules_version: ${{ steps.fetch_versions.outputs.sing_rules_chocolate4u_iran_rules_version }}
+      sing_rules_chocolate4u_iran_rules_version: ${{
+        steps.fetch_versions.outputs.sing_rules_chocolate4u_iran_rules_version
+        }}
       sing_geoip_soffchen_version: ${{ steps.fetch_versions.outputs.sing_geoip_soffchen_version }}
       sing_geosite_soffchen_version: ${{ steps.fetch_versions.outputs.sing_geosite_soffchen_version }}
     steps:
@@ -264,6 +266,7 @@ jobs:
       GOOS: linux
       GOARCH: amd64
       CGO_ENABLED: 0
+      GOTOOLCHAIN: auto
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -321,6 +324,7 @@ jobs:
       GOOS: linux
       GOARCH: amd64
       CGO_ENABLED: 0
+      GOTOOLCHAIN: auto
     steps:
       - name: Checkout
         uses: actions/checkout@v6
