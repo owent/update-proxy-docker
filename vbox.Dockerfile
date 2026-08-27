@@ -1,4 +1,9 @@
-FROM --platform=$BUILDPLATFORM golang:alpine AS builder
+# Builder image follows the one upstream sing-box validated for each release
+# (passed by CI via --build-arg GO_IMAGE=...); golang:1.25-alpine is only the fallback.
+# Never use floating tags here: golang:alpine/1-alpine currently track Go 1.27,
+# whose encoding/json/v2 dropped APIs required by go-json-experiment/json pinned by v1.13.x.
+ARG GO_IMAGE=golang:1.25-alpine
+FROM --platform=$BUILDPLATFORM ${GO_IMAGE} AS builder
 
 LABEL maintainer="nekohasekai <contact-git@sekai.icu>"
 COPY . /go/src/github.com/sagernet/sing-box

@@ -212,15 +212,20 @@ jobs:
           curl -k -L --retry 3 --retry-max-time 1800 https://github.com/soffchen/sing-geoip/releases/download/$SING_GEOIP_SOFFCHEN_LATEST_VERSION/geoip-cn.db -o data/share/geoip-cn.db || \
             curl -k -L --retry 3 --retry-max-time 1800 https://github.com/SagerNet/sing-geoip/releases/download/$SING_GEOIP_LATEST_VERSION/geoip-cn.db -o data/share/geoip-cn.db
           curl -k -L --retry 3 --retry-max-time 1800 https://github.com/Chocolate4U/Iran-sing-box-rules/releases/download/$SING_RULES_CHOCOLATE4U_IRAN_RULES_LATEST_VERSION/geoip-lite.db -o data/share/geoip-lite.db
-          curl -k -L --retry 3 --retry-max-time 1800 https://github.com/Chocolate4U/Iran-sing-box-rules/releases/download/$SING_RULES_CHOCOLATE4U_IRAN_RULES_LATEST_VERSION/geosite.db -o data/share/geosite.db || \\
-            curl -k -L --retry 3 --retry-max-time 1800 https://github.com/soffchen/sing-geosite/releases/download/$SING_GEOSITE_SOFFCHEN_LATEST_VERSION/geosite.db -o data/share/geosite.db || \\
+          curl -k -L --retry 3 --retry-max-time 1800 https://github.com/Chocolate4U/Iran-sing-box-rules/releases/download/$SING_RULES_CHOCOLATE4U_IRAN_RULES_LATEST_VERSION/geosite.db -o data/share/geosite.db || \
+            curl -k -L --retry 3 --retry-max-time 1800 https://github.com/soffchen/sing-geosite/releases/download/$SING_GEOSITE_SOFFCHEN_LATEST_VERSION/geosite.db -o data/share/geosite.db || \
             curl -k -L --retry 3 --retry-max-time 1800 https://github.com/SagerNet/sing-geosite/releases/download/$SING_GEOSITE_LATEST_VERSION/geosite.db -o data/share/geosite.db
           curl -k -L --retry 3 --retry-max-time 1800 https://github.com/Chocolate4U/Iran-sing-box-rules/releases/download/$SING_RULES_CHOCOLATE4U_IRAN_RULES_LATEST_VERSION/geosite-lite.db -o data/share/geosite-lite.db
           curl -k -L --retry 3 --retry-max-time 1800 https://github.com/SagerNet/sing-geosite/releases/download/$SING_GEOSITE_LATEST_VERSION/geosite-cn.db -o data/share/geosite-cn.db
           # Patch srs from https://github.com/Loyalsoldier/geoip/tree/release/srs and https://github.com/Loyalsoldier/geosite/tree/release/srs
           cp -f ../vbox.Dockerfile ./
+          # Follow the builder image upstream validated for this exact sing-box version,
+          # so the toolchain stays as new as possible without breaking (e.g. Go 1.27 vs go-json-experiment/json).
+          GO_IMAGE="$(sed -nE 's/^FROM --platform=\$BUILDPLATFORM[[:space:]]+([^[:space:]]+)[[:space:]]+AS builder$/\1/p' Dockerfile | head -n 1)"
+          [ "x$GO_IMAGE" != "x" ] || GO_IMAGE="golang:1.25-alpine"
+          echo "Use Go builder image: $GO_IMAGE"
           echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "owt5008137" --password-stdin docker.io
-          docker build --build-arg GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} --build-arg TARGETOS=linux --build-arg TARGETARCH=amd64 --force-rm --tag docker.io/owt5008137/vbox:latest -f vbox.Dockerfile .
+          docker build --build-arg GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} --build-arg TARGETOS=linux --build-arg TARGETARCH=amd64 --build-arg GO_IMAGE="$GO_IMAGE" --force-rm --tag docker.io/owt5008137/vbox:latest -f vbox.Dockerfile .
           docker push docker.io/owt5008137/vbox:latest
           # Github package
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
