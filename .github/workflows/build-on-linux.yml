@@ -291,16 +291,16 @@ jobs:
           GITCOMMIT="$(git describe --dirty --always)"
           sed -i.bak -r '/alternate:.*/d' plugin.cfg
           sed -i.bak '/forward:.*/i alternate:github.com/coredns/alternate' plugin.cfg
-          go get github.com/coredns/alternate
+          go get github.com/coredns/alternate@v0.2.12
           sed -i.bak -r '/finalize:.*/d' plugin.cfg
           sed -i.bak '/cache:.*/a finalize:github.com/tmeckel/coredns-finalizer' plugin.cfg
           go get github.com/tmeckel/coredns-finalizer
           sed -i.bak -r '/filter:.*/d' plugin.cfg
           sed -i.bak '/cache:.*/a filter:github.com/owent/coredns-filter' plugin.cfg
-          go get github.com/owent/coredns-filter@main
+          go get github.com/owent/coredns-filter@v0.1.1
           sed -i.bak -r '/nftables:.*/d' plugin.cfg
           sed -i.bak '/cache:.*/i nftables:github.com/owent/coredns-nftables' plugin.cfg
-          go get github.com/owent/coredns-nftables@main
+          go get github.com/owent/coredns-nftables@v0.2.2
           go generate
           # Just like it in make -f Makefile.release build LINUX_ARCH=amd64
           # CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build  -ldflags="-s -w -X github.com/coredns/coredns/coremain.GitCommit=$GITCOMMIT" -o build/linux/amd64/coredns
@@ -349,16 +349,16 @@ jobs:
           GITCOMMIT="$(git describe --dirty --always)"
           sed -i.bak -r '/alternate:.*/d' plugin.cfg
           sed -i.bak '/forward:.*/i alternate:github.com/coredns/alternate' plugin.cfg
-          go get github.com/coredns/alternate
+          go get github.com/coredns/alternate@v0.2.12
           sed -i.bak -r '/finalize:.*/d' plugin.cfg
           sed -i.bak '/cache:.*/a finalize:github.com/tmeckel/coredns-finalizer' plugin.cfg
           go get github.com/tmeckel/coredns-finalizer
           sed -i.bak -r '/filter:.*/d' plugin.cfg
           sed -i.bak '/cache:.*/a filter:github.com/owent/coredns-filter' plugin.cfg
-          go get github.com/owent/coredns-filter@main
+          go get github.com/owent/coredns-filter@v0.1.1
           sed -i.bak -r '/nftables:.*/d' plugin.cfg
           sed -i.bak '/cache:.*/i nftables:github.com/owent/coredns-nftables' plugin.cfg
-          go get github.com/owent/coredns-nftables@main
+          go get github.com/owent/coredns-nftables@v0.2.2
           go generate
           # Just like it in make -f Makefile.release build LINUX_ARCH=amd64
           CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -gcflags=all="-N -l" -ldflags="-w -X github.com/coredns/coredns/coremain.GitCommit=$GITCOMMIT" -o build/linux/amd64/coredns

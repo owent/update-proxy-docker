@@ -12,7 +12,10 @@ COPY bin/geoip-only-cn-private.dat /usr/local/v2ray/bin/
 # sed -i -r 's#dl-cdn.alpinelinux.org#mirrors.tencent.com#g' /etc/apk/repositories ;   \
 RUN set -ex ;                                                                          \
   sed -i -r 's#dl-cdn.alpinelinux.org#mirrors.aliyun.com#g' /etc/apk/repositories ;    \
-  apk --no-cache add ca-certificates tzdata ;                                          \
+  apk --no-cache add ca-certificates tzdata || {                                       \
+    sed -i -r 's#mirrors.aliyun.com#dl-cdn.alpinelinux.org#g' /etc/apk/repositories ;  \
+    apk --no-cache add ca-certificates tzdata ;                                        \
+  } ;                                                                                  \
   ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime ;                            \
   mkdir -p /var/log/v2ray/ /var/log/vproxy/ ;                                          \
   mkdir -p /usr/local/vproxy/bin /usr/local/vproxy/etc /usr/local/vproxy/share ;       \
