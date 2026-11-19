@@ -44,12 +44,13 @@
 
 <h2>v2rayN（7.x，sing-box 内核）</h2>
 <table>
-  <tr><th>内容</th><th>URL</th></tr>
-  <tr><td>CN whitelist 路由规则</td><td><code>https://proxy-route.shkits.com/v2rayN/smartroute-cn-whitelist-out-ai.rules.json</code></td></tr>
+  <tr><th>内容</th><th>URL</th><th>用法</th></tr>
+  <tr><td>CN whitelist 路由规则</td><td><code>https://proxy-route.shkits.com/v2rayN/smartroute-cn-whitelist-out-ai.rules.json</code></td><td rowspan="3">规则集设置 → 填到<strong>可选地址 (Url)</strong> → 点<strong>「从订阅 Url 中导入规则」</strong></td></tr>
   <tr><td>proxy list 路由规则</td><td><code>https://proxy-route.shkits.com/v2rayN/smartroute-proxy-list-out-ai.rules.json</code></td></tr>
-  <tr><td>自定义 sing-box rule set（14 个）</td><td><code>https://proxy-route.shkits.com/v2rayN/singbox-custom-ruleset.json</code></td></tr>
+  <tr><td>（二选一，不要同时导入）</td><td></td></tr>
+  <tr><td>自定义 sing-box rule set 映射（14 个）</td><td><code>https://proxy-route.shkits.com/v2rayN/singbox-custom-ruleset.json</code></td><td><strong>不是订阅地址！</strong>下载保存为本地文件，在规则集设置的<strong>「自定义 sing-box rule set」</strong>字段用「浏览」选择</td></tr>
 </table>
-<p>路由设置 → 导入规则 → <strong>从订阅 URL 导入</strong>；rule set 映射填到路由设置的「自定义 sing-box rule set」。</p>
+<p>注意：导入的规则中 <code>outboundTag = out-ai</code> 需对应实际节点（改成节点别名，如 <code>vr-us-bb.shkits.com(AnyTLS)</code>，或建同名策略组）。</p>
 
 <h2>mihomo / Clash Meta / Clash Verge</h2>
 <table>

@@ -83,7 +83,7 @@ Throne 里每个"规则组"是一条规则；sing-box/v2rayN 导出把**相邻�
 
 1. **完整配置模板（推荐，与本机现状一致）**：把 `sing-box/*.json` 里的 `route.rules` 按需并入模板（模板已有更细的 DNS/进程/BT 规则，注意先后顺序），`out-ai` ↔ 模板中 `out-proxy-ai` 二选一改名；`rule_set` 引用可继续用本地 `ext-srss`，或换成导出文件里的远程 URL。
 2. **路由规则 + 自定义 ruleset（纯 GUI，支持 URL 订阅）**：
-   - 设置 → 路由设置 → 「自定义 sing-box rule set」填入 `v2rayN/singbox-custom-ruleset.json` 内容（14 个 tag 与 Throne 完全同源，解析优先级最高）；
+   - 规则集设置 → **可选地址 (Url)** 填 `https://proxy-route.shkits.com/v2rayN/smartroute-proxy-list-out-ai.rules.json`（或 cn-whitelist 版）→ 点「从订阅 Url 中导入规则」。**注意不要把 singbox-custom-ruleset.json 填到可选地址**——那是「自定义 sing-box rule set」字段的本地映射文件（下载后用「浏览」选择），填错会导致导入的规则全为空白行；
    - 路由规则 → 导入规则 → 从文件/剪贴板/订阅 URL 导入 `*.rules.json`；
    - DNS 劫持由 v2rayN 内置 DNS 模块处理，无需导入；
    - `geoip:openai` 一条仅 sing-box 内核可解析（Xray 的 geoip.dat 无此类别），备注中已标注。
