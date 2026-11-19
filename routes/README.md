@@ -10,7 +10,7 @@
 
 两条路由的差异仅三处：proxy list 版多 `geosite-category-dev-cn` 直连、多「Proxy域名」一组规则、兜底不同。
 
-站点首页（各工具订阅 URL 速查）见 [index.md](index.md)。
+站点首页（各工具订阅 URL 速查）见 [index.html](index.html)。
 
 ## 出站占位符 `out-ai`：如何指定实际接入点
 

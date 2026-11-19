@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>代理路由订阅 · proxy-route.shkits.com</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font-family: system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+         max-width: 960px; margin: 0 auto; padding: 1rem 1.5rem 3rem; line-height: 1.6; }
+  h1 { font-size: 1.6rem; border-bottom: 2px solid #8884; padding-bottom: .4rem; }
+  h2 { font-size: 1.2rem; margin-top: 2rem; }
+  code { background: #8882; padding: .1rem .35rem; border-radius: 4px; font-size: .9em;
+         word-break: break-all; }
+  table { border-collapse: collapse; width: 100%; margin: .6rem 0; }
+  th, td { border: 1px solid #8884; padding: .4rem .6rem; text-align: left; vertical-align: top; }
+  th { background: #8881; }
+  .note { background: #8881; border-left: 3px solid #888; padding: .6rem .9rem; margin: 1rem 0; }
+  a { color: #58a6ff; }
+  @media (prefers-color-scheme: dark) { a { color: #7ab7ff; } }
+</style>
+</head>
+<body>
+
+<h1>代理路由订阅</h1>
+<p>本站（<code>proxy-route.shkits.com</code>）托管从 Throne 导出的分流路由订阅。来源仓库
+<a href="https://github.com/owent/update-proxy-docker">owent/update-proxy-docker</a> 的
+<a href="https://github.com/owent/update-proxy-docker/tree/main/routes"><code>routes/</code></a> 目录，main 分支变更后自动发布。</p>
+
+<p>两条路由的区别：</p>
+<ul>
+  <li><strong>CN whitelist（白名单模式）</strong>：大陆/内网/私有域名直连，AI 及特殊域名走 <code>out-ai</code>，<strong>其余全部走代理</strong></li>
+  <li><strong>proxy list（代理名单模式）</strong>：直连规则同上，GFW/Telegram/国外域名走主代理，<strong>其余全部直连</strong></li>
+</ul>
+
+<h2>Throne</h2>
+<table>
+  <tr><th>路由</th><th>订阅 URL</th></tr>
+  <tr><td>CN whitelist</td><td><code>https://proxy-route.shkits.com/throne/smartroute-cn-whitelist-out-ai.txt</code></td></tr>
+  <tr><td>proxy list</td><td><code>https://proxy-route.shkits.com/throne/smartroute-proxy-list-out-ai.txt</code></td></tr>
+</table>
+<p>Throne 中导入剪贴板/文件粘贴 deeplink，或把上面 URL 添加为远程路由配置（自动更新）。一次性订阅两条：
+<a href="throne/add-both-remote.txt"><code>add-both-remote.txt</code></a>。</p>
+
+<h2>v2rayN（7.x，sing-box 内核）</h2>
+<table>
+  <tr><th>内容</th><th>URL</th></tr>
+  <tr><td>CN whitelist 路由规则</td><td><code>https://proxy-route.shkits.com/v2rayN/smartroute-cn-whitelist-out-ai.rules.json</code></td></tr>
+  <tr><td>proxy list 路由规则</td><td><code>https://proxy-route.shkits.com/v2rayN/smartroute-proxy-list-out-ai.rules.json</code></td></tr>
+  <tr><td>自定义 sing-box rule set（14 个）</td><td><code>https://proxy-route.shkits.com/v2rayN/singbox-custom-ruleset.json</code></td></tr>
+</table>
+<p>路由设置 → 导入规则 → <strong>从订阅 URL 导入</strong>；rule set 映射填到路由设置的「自定义 sing-box rule set」。</p>
+
+<h2>mihomo / Clash Meta / Clash Verge</h2>
+<table>
+  <tr><th>内容</th><th>URL</th></tr>
+  <tr><td>CN whitelist 规则片段</td><td><a href="mihomo/smartroute-cn-whitelist-out-ai.yaml"><code>…/mihomo/smartroute-cn-whitelist-out-ai.yaml</code></a></td></tr>
+  <tr><td>proxy list 规则片段</td><td><a href="mihomo/smartroute-proxy-list-out-ai.yaml"><code>…/mihomo/smartroute-proxy-list-out-ai.yaml</code></a></td></tr>
+  <tr><td>direct-private provider</td><td><code>https://proxy-route.shkits.com/mihomo/providers/direct-private.yaml</code></td></tr>
+  <tr><td>out-ai-keywords provider</td><td><code>https://proxy-route.shkits.com/mihomo/providers/out-ai-keywords.yaml</code></td></tr>
+  <tr><td>out-ai-domains provider</td><td><code>https://proxy-route.shkits.com/mihomo/providers/out-ai-domains.yaml</code></td></tr>
+</table>
+<p>把片段里的 <code>rules</code> + <code>rule-providers</code> 合并进配置即可（providers 已直接指向本站）。</p>
+
+<h2>sing-box</h2>
+<table>
+  <tr><th>内容</th><th>URL</th></tr>
+  <tr><td>CN whitelist route 片段</td><td><a href="sing-box/smartroute-cn-whitelist-out-ai.json"><code>…/sing-box/smartroute-cn-whitelist-out-ai.json</code></a></td></tr>
+  <tr><td>proxy list route 片段</td><td><a href="sing-box/smartroute-proxy-list-out-ai.json"><code>…/sing-box/smartroute-proxy-list-out-ai.json</code></a></td></tr>
+  <tr><td>direct-private rule-set（source 格式）</td><td><code>https://proxy-route.shkits.com/sing-box/rule-set-src/direct-private.json</code></td></tr>
+  <tr><td>out-ai-keywords rule-set（source 格式）</td><td><code>https://proxy-route.shkits.com/sing-box/rule-set-src/out-ai-keywords.json</code></td></tr>
+  <tr><td>out-ai-domains rule-set（source 格式）</td><td><code>https://proxy-route.shkits.com/sing-box/rule-set-src/out-ai-domains.json</code></td></tr>
+</table>
+
+<h2>其他工具（AdGuard / dnsmasq / SwitchyOmega 等）</h2>
+<p>纯文本列表见 <a href="lists/"><code>lists/</code></a>（direct-private-suffix / direct-private-regex / out-ai-keywords / out-ai-domains）。</p>
+
+<h2>两个占位出站</h2>
+<div class="note">
+规则里 <code>proxy</code>（主出站）和 <code>out-ai</code>（AI 专用出站，原 Throne 节点
+<code>vr-us-bb.shkits.com(AnyTLS)</code>）是<strong>引用名，不含凭据</strong>，各工具在自己配置里绑定实际节点：
+sing-box 在 <code>outbounds</code> 定义 <code>tag: out-ai</code>；mihomo 建同名策略组；
+v2rayN 路由规则 outboundTag 直接填节点/策略组名；Throne 订阅导入按节点名
+<code>vr-us-bb.shkits.com(AnyTLS)</code> 解析（本机需存在同名节点，否则该组回退 proxy）。
+</div>
+
+<h2>关于 raw.githubusercontent.com 下载</h2>
+<p>公共 geosite/geoip 规则集仍托管在 raw.githubusercontent.com，导出配置已内置三层保障：</p>
+<ol>
+  <li><strong>sing-box / v2rayN</strong>：rule_set 带 <code>download_detour: "proxy"</code>（经代理下载）</li>
+  <li><strong>mihomo</strong>：对应 rule-provider 带 <code>proxy: PROXY</code>（经代理下载，按需改成你的组名）</li>
+  <li><strong>无代理环境</strong>：URL 换 jsdelivr 镜像，如
+      <code>https://cdn.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geoip/cn.srs</code>；
+      Throne 自身拉取 githubusercontent 订阅时会自动改写为 jsdelivr</li>
+</ol>
+<p>更多细节见 <a href="README.md"><code>README.md</code></a>。</p>
+
+</body>
+</html>
