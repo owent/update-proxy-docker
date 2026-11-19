@@ -1,0 +1,184 @@
+{
+  "route": {
+    "rules": [
+      {
+        "protocol": "dns",
+        "action": "hijack-dns"
+      },
+      {
+        "type": "logical",
+        "mode": "or",
+        "rules": [
+          {
+            "rule_set": [
+              "geoip-private",
+              "geoip-cn",
+              "geosite-cn",
+              "geosite-category-speedtest",
+              "geosite-codeberg"
+            ]
+          },
+          {
+            "domain_suffix": [
+              "shkits.com",
+              "x-ha.com",
+              "r-ci.com",
+              "myrionstudio.com",
+              "myip.biturl.top",
+              "ifconfig.me",
+              "ifconfig.io",
+              "api.myip.la",
+              "getip.icu",
+              "ip.threep.top",
+              "ip.sb",
+              "test-ipv6.com",
+              "ipv6-test.com",
+              "speedtestworld.com",
+              "jetbrains.com.cn",
+              "modelscope.cn",
+              "steamcontent.com",
+              "steamserver.net",
+              "epicgamescdn.com.cdn.cloudflare.net",
+              "epicgamescdn.com",
+              "windowsupdate.com",
+              "download.windowsupdate.com",
+              "cdn.office.net",
+              "level3.blizzard.com",
+              "cdn.blizzard.com",
+              "dl.playstation.net",
+              "update.playstation.net",
+              "cdn.update.playstation.net",
+              "dlassets-ssl.xboxlive.com",
+              "download.dm.origin.com",
+              "origin-a.akamaihd.net",
+              "cdn.gog.com",
+              "cdn.ubi.com",
+              "download.minecraft.net",
+              "cdn.nintendo.net",
+              "ssl-lvlt.cdn.ea.com",
+              "uplaypc-s-ubisoft.cdn.ubionline.com.cn",
+              "gog-cdn-lumen.secure2.footprint.net",
+              "blizzard.gcdn.cloudn.co.kr",
+              "blzddist1-a.akamaihd.net",
+              "blzddistkr1-a.akamaihd.net"
+            ]
+          },
+          {
+            "domain_regex": [
+              "(xvcf|assets).*\\.xboxlive\\.com",
+              "epicgames-download.*\\.akamaized\\.net",
+              "(cdn|download).*\\.epicgames\\.com"
+            ]
+          }
+        ],
+        "outbound": "direct"
+      },
+      {
+        "type": "logical",
+        "mode": "or",
+        "rules": [
+          {
+            "rule_set": [
+              "geoip-google",
+              "geoip-openai",
+              "geosite-anthropic",
+              "geosite-category-ai-!cn",
+              "geosite-unity"
+            ]
+          },
+          {
+            "domain_keyword": [
+              "anthropic",
+              "claude",
+              "openai",
+              "chatgpt"
+            ]
+          },
+          {
+            "domain_suffix": [
+              "nextcloud.com",
+              "topazlabs.com",
+              "jetbrains.ai",
+              "grazie.ai",
+              "jetbrains.com"
+            ]
+          }
+        ],
+        "outbound": "out-ai"
+      }
+    ],
+    "rule_set": [
+      {
+        "type": "remote",
+        "tag": "geoip-private",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geoip/private.srs",
+        "download_detour": "proxy"
+      },
+      {
+        "type": "remote",
+        "tag": "geoip-cn",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geoip/cn.srs",
+        "download_detour": "proxy"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-cn",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/cn.srs",
+        "download_detour": "proxy"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-category-speedtest",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/category-speedtest.srs",
+        "download_detour": "proxy"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-codeberg",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/codeberg.srs",
+        "download_detour": "proxy"
+      },
+      {
+        "type": "remote",
+        "tag": "geoip-google",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geoip/google.srs",
+        "download_detour": "proxy"
+      },
+      {
+        "type": "remote",
+        "tag": "geoip-openai",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/Chocolate4U/Iran-sing-box-rules/rule-set/geoip-openai.srs",
+        "download_detour": "proxy"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-anthropic",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/anthropic.srs",
+        "download_detour": "proxy"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-category-ai-!cn",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/category-ai-!cn.srs",
+        "download_detour": "proxy"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-unity",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/unity.srs",
+        "download_detour": "proxy"
+      }
+    ],
+    "final": "proxy"
+  }
+}

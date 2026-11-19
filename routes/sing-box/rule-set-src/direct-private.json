@@ -1,0 +1,55 @@
+{
+  "version": 1,
+  "rules": [
+    {
+      "domain_suffix": [
+        "shkits.com",
+        "x-ha.com",
+        "r-ci.com",
+        "myrionstudio.com",
+        "myip.biturl.top",
+        "ifconfig.me",
+        "ifconfig.io",
+        "api.myip.la",
+        "getip.icu",
+        "ip.threep.top",
+        "ip.sb",
+        "test-ipv6.com",
+        "ipv6-test.com",
+        "speedtestworld.com",
+        "jetbrains.com.cn",
+        "modelscope.cn",
+        "steamcontent.com",
+        "steamserver.net",
+        "epicgamescdn.com.cdn.cloudflare.net",
+        "epicgamescdn.com",
+        "windowsupdate.com",
+        "download.windowsupdate.com",
+        "cdn.office.net",
+        "level3.blizzard.com",
+        "cdn.blizzard.com",
+        "dl.playstation.net",
+        "update.playstation.net",
+        "cdn.update.playstation.net",
+        "dlassets-ssl.xboxlive.com",
+        "download.dm.origin.com",
+        "origin-a.akamaihd.net",
+        "cdn.gog.com",
+        "cdn.ubi.com",
+        "download.minecraft.net",
+        "cdn.nintendo.net",
+        "ssl-lvlt.cdn.ea.com",
+        "uplaypc-s-ubisoft.cdn.ubionline.com.cn",
+        "gog-cdn-lumen.secure2.footprint.net",
+        "blizzard.gcdn.cloudn.co.kr",
+        "blzddist1-a.akamaihd.net",
+        "blzddistkr1-a.akamaihd.net"
+      ],
+      "domain_regex": [
+        "(xvcf|assets).*\\.xboxlive\\.com",
+        "epicgames-download.*\\.akamaized\\.net",
+        "(cdn|download).*\\.epicgames\\.com"
+      ]
+    }
+  ]
+}

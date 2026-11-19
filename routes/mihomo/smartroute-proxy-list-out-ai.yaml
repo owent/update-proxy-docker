@@ -1,0 +1,155 @@
+rules:
+  # DNS 劫持由 mihomo 的 TUN/DNS 模块处理，无需等价规则
+  - RULE-SET,geoip-private,DIRECT,no-resolve  # 内网地址
+  - RULE-SET,direct-private,DIRECT  # 私有域名(后缀+正则)
+  - RULE-SET,geoip-cn,DIRECT,no-resolve  # 大陆 ip/域名
+  - RULE-SET,geosite-cn,DIRECT
+  - RULE-SET,geosite-category-dev-cn,DIRECT
+  - RULE-SET,geosite-category-speedtest,DIRECT
+  - RULE-SET,geosite-codeberg,DIRECT
+  - RULE-SET,geoip-google,out-ai,no-resolve  # AI/Google-域名
+  - RULE-SET,geoip-openai,out-ai,no-resolve  # Throne 原集合 geoip-openai(仅 sing-box 格式)，此处用 ipinfo ai 类别替代
+  - RULE-SET,geosite-anthropic,out-ai
+  - RULE-SET,geosite-category-ai-!cn,out-ai
+  - RULE-SET,geosite-unity,out-ai
+  - RULE-SET,out-ai-keywords,out-ai  # AI-关键字
+  - RULE-SET,out-ai-domains,out-ai  # 特殊 US 链路
+  - RULE-SET,geoip-telegram,PROXY,no-resolve  # Proxy域名
+  - RULE-SET,geosite-gfw,PROXY
+  - RULE-SET,geosite-geolocation-!cn,PROXY
+  - MATCH,DIRECT
+
+rule-providers:
+  "direct-private":
+    type: http
+    behavior: classical
+    format: yaml
+    url: "https://proxy-route.shkits.com/mihomo/providers/direct-private.yaml"
+    path: ./ruleset/direct-private.yaml
+    interval: 86400
+  "out-ai-keywords":
+    type: http
+    behavior: classical
+    format: yaml
+    url: "https://proxy-route.shkits.com/mihomo/providers/out-ai-keywords.yaml"
+    path: ./ruleset/out-ai-keywords.yaml
+    interval: 86400
+  "out-ai-domains":
+    type: http
+    behavior: classical
+    format: yaml
+    url: "https://proxy-route.shkits.com/mihomo/providers/out-ai-domains.yaml"
+    path: ./ruleset/out-ai-domains.yaml
+    interval: 86400
+  "geoip-private":
+    type: http
+    behavior: ipcidr
+    format: yaml
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/private.yaml"
+    path: ./ruleset/geoip-private.yaml
+    interval: 86400
+    proxy: PROXY  # raw.githubusercontent.com 需经代理下载；不需要可删
+  "geoip-cn":
+    type: http
+    behavior: ipcidr
+    format: yaml
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/cn.yaml"
+    path: ./ruleset/geoip-cn.yaml
+    interval: 86400
+    proxy: PROXY  # raw.githubusercontent.com 需经代理下载；不需要可删
+  "geosite-cn":
+    type: http
+    behavior: domain
+    format: yaml
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/cn.yaml"
+    path: ./ruleset/geosite-cn.yaml
+    interval: 86400
+    proxy: PROXY  # raw.githubusercontent.com 需经代理下载；不需要可删
+  "geosite-category-dev-cn":
+    type: http
+    behavior: domain
+    format: yaml
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-dev-cn.yaml"
+    path: ./ruleset/geosite-category-dev-cn.yaml
+    interval: 86400
+    proxy: PROXY  # raw.githubusercontent.com 需经代理下载；不需要可删
+  "geosite-category-speedtest":
+    type: http
+    behavior: domain
+    format: yaml
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-speedtest.yaml"
+    path: ./ruleset/geosite-category-speedtest.yaml
+    interval: 86400
+    proxy: PROXY  # raw.githubusercontent.com 需经代理下载；不需要可删
+  "geosite-codeberg":
+    type: http
+    behavior: domain
+    format: yaml
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/codeberg.yaml"
+    path: ./ruleset/geosite-codeberg.yaml
+    interval: 86400
+    proxy: PROXY  # raw.githubusercontent.com 需经代理下载；不需要可删
+  "geoip-google":
+    type: http
+    behavior: ipcidr
+    format: yaml
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/google.yaml"
+    path: ./ruleset/geoip-google.yaml
+    interval: 86400
+    proxy: PROXY  # raw.githubusercontent.com 需经代理下载；不需要可删
+  "geoip-openai":
+    type: http
+    behavior: ipcidr
+    format: yaml
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/ai.yaml"
+    path: ./ruleset/geoip-openai.yaml
+    interval: 86400
+    proxy: PROXY  # raw.githubusercontent.com 需经代理下载；不需要可删
+  "geosite-anthropic":
+    type: http
+    behavior: domain
+    format: yaml
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/anthropic.yaml"
+    path: ./ruleset/geosite-anthropic.yaml
+    interval: 86400
+    proxy: PROXY  # raw.githubusercontent.com 需经代理下载；不需要可删
+  "geosite-category-ai-!cn":
+    type: http
+    behavior: domain
+    format: yaml
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-ai-!cn.yaml"
+    path: ./ruleset/geosite-category-ai-!cn.yaml
+    interval: 86400
+    proxy: PROXY  # raw.githubusercontent.com 需经代理下载；不需要可删
+  "geosite-unity":
+    type: http
+    behavior: domain
+    format: yaml
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/unity.yaml"
+    path: ./ruleset/geosite-unity.yaml
+    interval: 86400
+    proxy: PROXY  # raw.githubusercontent.com 需经代理下载；不需要可删
+  "geoip-telegram":
+    type: http
+    behavior: ipcidr
+    format: yaml
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/telegram.yaml"
+    path: ./ruleset/geoip-telegram.yaml
+    interval: 86400
+    proxy: PROXY  # raw.githubusercontent.com 需经代理下载；不需要可删
+  "geosite-gfw":
+    type: http
+    behavior: domain
+    format: yaml
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/gfw.yaml"
+    path: ./ruleset/geosite-gfw.yaml
+    interval: 86400
+    proxy: PROXY  # raw.githubusercontent.com 需经代理下载；不需要可删
+  "geosite-geolocation-!cn":
+    type: http
+    behavior: domain
+    format: yaml
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/geolocation-!cn.yaml"
+    path: ./ruleset/geosite-geolocation-!cn.yaml
+    interval: 86400
+    proxy: PROXY  # raw.githubusercontent.com 需经代理下载；不需要可删

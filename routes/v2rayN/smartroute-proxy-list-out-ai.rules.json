@@ -1,0 +1,102 @@
+[
+  {
+    "outboundTag": "direct",
+    "enabled": true,
+    "remarks": "内网地址+私有域名(域名后缀)+私有域名(正则)+大陆 ip/域名",
+    "domain": [
+      "geosite:cn",
+      "geosite:category-dev-cn",
+      "geosite:category-speedtest",
+      "geosite:codeberg",
+      "domain:shkits.com",
+      "domain:x-ha.com",
+      "domain:r-ci.com",
+      "domain:myrionstudio.com",
+      "domain:myip.biturl.top",
+      "domain:ifconfig.me",
+      "domain:ifconfig.io",
+      "domain:api.myip.la",
+      "domain:getip.icu",
+      "domain:ip.threep.top",
+      "domain:ip.sb",
+      "domain:test-ipv6.com",
+      "domain:ipv6-test.com",
+      "domain:speedtestworld.com",
+      "domain:jetbrains.com.cn",
+      "domain:modelscope.cn",
+      "domain:steamcontent.com",
+      "domain:steamserver.net",
+      "domain:epicgamescdn.com.cdn.cloudflare.net",
+      "domain:epicgamescdn.com",
+      "domain:windowsupdate.com",
+      "domain:download.windowsupdate.com",
+      "domain:cdn.office.net",
+      "domain:level3.blizzard.com",
+      "domain:cdn.blizzard.com",
+      "domain:dl.playstation.net",
+      "domain:update.playstation.net",
+      "domain:cdn.update.playstation.net",
+      "domain:dlassets-ssl.xboxlive.com",
+      "domain:download.dm.origin.com",
+      "domain:origin-a.akamaihd.net",
+      "domain:cdn.gog.com",
+      "domain:cdn.ubi.com",
+      "domain:download.minecraft.net",
+      "domain:cdn.nintendo.net",
+      "domain:ssl-lvlt.cdn.ea.com",
+      "domain:uplaypc-s-ubisoft.cdn.ubionline.com.cn",
+      "domain:gog-cdn-lumen.secure2.footprint.net",
+      "domain:blizzard.gcdn.cloudn.co.kr",
+      "domain:blzddist1-a.akamaihd.net",
+      "domain:blzddistkr1-a.akamaihd.net",
+      "regexp:(xvcf|assets).*\\.xboxlive\\.com",
+      "regexp:epicgames-download.*\\.akamaized\\.net",
+      "regexp:(cdn|download).*\\.epicgames\\.com"
+    ],
+    "ip": [
+      "geoip:private",
+      "geoip:cn"
+    ]
+  },
+  {
+    "outboundTag": "out-ai",
+    "enabled": true,
+    "remarks": "AI/Google-域名+AI-关键字+特殊 US 链路；geoip:openai 需 sing-box 内核+自定义 ruleset",
+    "domain": [
+      "geosite:anthropic",
+      "geosite:category-ai-!cn",
+      "geosite:unity",
+      "domain:nextcloud.com",
+      "domain:topazlabs.com",
+      "domain:jetbrains.ai",
+      "domain:grazie.ai",
+      "domain:jetbrains.com",
+      "anthropic",
+      "claude",
+      "openai",
+      "chatgpt"
+    ],
+    "ip": [
+      "geoip:google",
+      "geoip:openai"
+    ]
+  },
+  {
+    "outboundTag": "proxy",
+    "enabled": true,
+    "remarks": "Proxy域名",
+    "domain": [
+      "geosite:gfw",
+      "geosite:geolocation-!cn"
+    ],
+    "ip": [
+      "geoip:telegram"
+    ]
+  },
+  {
+    "port": "0-65535",
+    "outboundTag": "direct",
+    "enabled": true,
+    "remarks": "最终"
+  }
+]

@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "rules": [
+    {
+      "domain_suffix": [
+        "nextcloud.com",
+        "topazlabs.com",
+        "jetbrains.ai",
+        "grazie.ai",
+        "jetbrains.com"
+      ]
+    }
+  ]
+}

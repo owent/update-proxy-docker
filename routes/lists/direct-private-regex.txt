@@ -1,0 +1,3 @@
+(xvcf|assets).*\.xboxlive\.com
+epicgames-download.*\.akamaized\.net
+(cdn|download).*\.epicgames\.com

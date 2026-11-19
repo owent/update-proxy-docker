@@ -6,6 +6,11 @@ on:
     branches:
       # Array of patterns that match refs/heads
       - main
+    paths-ignore:
+      # 路由订阅内容与脚本变更不触发 Docker 构建（由 deploy-routes-pages.yml 发布 Pages）
+      - "routes/**"
+      - "scripts/**"
+      - ".github/workflows/deploy-routes-pages.yml"
     tags:
       - "*"
   schedule:
