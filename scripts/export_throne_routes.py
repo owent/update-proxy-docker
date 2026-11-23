@@ -3,7 +3,7 @@
 """Export Throne route profiles (SmartRoute ai-bb) into URL-subscribable formats.
 
 Usage: python -I export_throne_routes.py [output_dir]
-Default output_dir: ./throne-route-export next to the parent of this script.
+Default output_dir: ./routes next to the parent of this script.
 
 Reads D:/program/Throne/config/throne.db (read-only) and emits:
   <out>/
@@ -12,8 +12,8 @@ Reads D:/program/Throne/config/throne.db (read-only) and emits:
     mihomo/smartroute-*.yaml        rules + rule-providers fragment
     mihomo/providers/*.yaml         custom lists as mihomo rule-providers (hostable)
     v2rayN/smartroute-*.rules.json  v2rayN 自定义路由规则数组（可从 URL 订阅导入）
-    v2rayN/singbox-custom-ruleset.json  v2rayN 自定义 sing-box rule set 映射
     throne/smartroute-*.txt         Throne 路由订阅文件（throne://route/ deeplink，一行）
+    throne/smartroute-*.raw.txt     Throne 手动导入的 Raw 分享文件
     throne/add-both-remote.txt      throne://remoteroute/ 一次性订阅两条路由的 deeplink
     lists/*.txt                     plain text lists
 
@@ -23,8 +23,7 @@ Outbound placeholders (NO credentials are exported):
   Throne 15 -> out-ai        (vr-us-bb.shkits.com(AnyTLS) 节点 tag；用户本机 v2rayN 模板中对应 out-proxy-ai)
   Throne 分享格式中 out-ai 按节点名解析（导入端需存在同名节点，否则回退 proxy 并警告）
 
-githubusercontent.com 可达性：sing-box rule_set 已带 download_detour=proxy；
-mihomo 指向 raw.githubusercontent.com 的 provider 附 proxy: PROXY；Throne 拉取订阅时自动改写 jsdelivr。
+sing-box 与 Throne Raw 的规则集通过显式 HTTP client 下载；mihomo 的公共 provider 经 PROXY 下载。
 """
 import base64
 import json
@@ -45,24 +44,26 @@ PROFILE_IDS = {6: "smartroute-cn-whitelist-out-ai", 7: "smartroute-proxy-list-ou
 
 SING = "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo"
 META = "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo"
-# Throne 内置 rule-set 名称 -> (sing-box .srs URL, mihomo .yaml URL)
+SING_HTTP_CLIENT = "smartroute-rulesets"
+# 规则集名称 -> (sing-box .srs URL, mihomo .mrs URL)
 # mihomo 的 geoip-openai 在 MetaCubeX 无对应集合，改用 ipinfo 的 ai 类别(含 OpenAI 等)
 RULESETS = {
-    "geoip-private":             (f"{SING}/geoip/private.srs",             f"{META}/geoip/private.yaml"),
-    "geoip-cn":                  (f"{SING}/geoip/cn.srs",                  f"{META}/geoip/cn.yaml"),
-    "geoip-google":              (f"{SING}/geoip/google.srs",              f"{META}/geoip/google.yaml"),
+    "geoip-private":             (f"{SING}/geoip/private.srs",             f"{META}/geoip/private.mrs"),
+    "geoip-cn":                  (f"{SING}/geoip/cn.srs",                  f"{META}/geoip/cn.mrs"),
+    "geoip-google":              (f"{SING}/geoip/google.srs",              f"{META}/geoip/google.mrs"),
     "geoip-openai":              ("https://raw.githubusercontent.com/Chocolate4U/Iran-sing-box-rules/rule-set/geoip-openai.srs",
-                                  f"{META}/geoip/ai.yaml"),
-    "geoip-telegram":            (f"{SING}/geoip/telegram.srs",            f"{META}/geoip/telegram.yaml"),
-    "geosite-cn":                (f"{SING}/geosite/cn.srs",                f"{META}/geosite/cn.yaml"),
-    "geosite-category-speedtest":(f"{SING}/geosite/category-speedtest.srs", f"{META}/geosite/category-speedtest.yaml"),
-    "geosite-codeberg":          (f"{SING}/geosite/codeberg.srs",          f"{META}/geosite/codeberg.yaml"),
-    "geosite-category-dev-cn":   (f"{SING}/geosite/category-dev-cn.srs",   f"{META}/geosite/category-dev-cn.yaml"),
-    "geosite-anthropic":         (f"{SING}/geosite/anthropic.srs",         f"{META}/geosite/anthropic.yaml"),
-    "geosite-category-ai-!cn":   (f"{SING}/geosite/category-ai-!cn.srs",   f"{META}/geosite/category-ai-!cn.yaml"),
-    "geosite-unity":             (f"{SING}/geosite/unity.srs",             f"{META}/geosite/unity.yaml"),
-    "geosite-gfw":               (f"{SING}/geosite/gfw.srs",               f"{META}/geosite/gfw.yaml"),
-    "geosite-geolocation-!cn":   (f"{SING}/geosite/geolocation-!cn.srs",   f"{META}/geosite/geolocation-!cn.yaml"),
+                                  f"{META}/geoip/ai.mrs"),
+    "geoip-telegram":            (f"{SING}/geoip/telegram.srs",            f"{META}/geoip/telegram.mrs"),
+    "geosite-cn":                (f"{SING}/geosite/cn.srs",                f"{META}/geosite/cn.mrs"),
+    "geosite-category-speedtest":(f"{SING}/geosite/category-speedtest.srs", f"{META}/geosite/category-speedtest.mrs"),
+    "geosite-codeberg":          (f"{SING}/geosite/codeberg.srs",          f"{META}/geosite/codeberg.mrs"),
+    "geosite-category-dev-cn":   (f"{SING}/geosite/category-dev-cn.srs",   f"{META}/geosite/category-dev-cn.mrs"),
+    "geosite-google":            (f"{SING}/geosite/google.srs",            f"{META}/geosite/google.mrs"),
+    "geosite-anthropic":         (f"{SING}/geosite/anthropic.srs",         f"{META}/geosite/anthropic.mrs"),
+    "geosite-category-ai-!cn":   (f"{SING}/geosite/category-ai-!cn.srs",   f"{META}/geosite/category-ai-!cn.mrs"),
+    "geosite-unity":             (f"{SING}/geosite/unity.srs",             f"{META}/geosite/unity.mrs"),
+    "geosite-gfw":               (f"{SING}/geosite/gfw.srs",               f"{META}/geosite/gfw.mrs"),
+    "geosite-geolocation-!cn":   (f"{SING}/geosite/geolocation-!cn.srs",   f"{META}/geosite/geolocation-!cn.mrs"),
 }
 
 OUTBOUND_MAP = {-2: "direct", -1: "proxy", 15: "out-ai"}
@@ -80,25 +81,28 @@ def load_profiles(con):
     profiles = {}
     for pid in PROFILE_IDS:
         row = con.execute("SELECT * FROM route_profiles WHERE id=?", (pid,)).fetchone()
-        rules = con.execute(
+        rows = con.execute(
             "SELECT * FROM route_rules WHERE route_profile_id=? ORDER BY rule_order ASC",
             (pid,),
         ).fetchall()
-        profiles[pid] = {"meta": dict(row), "rules": [dict(r) for r in rules]}
+        rules = [dict(r) for r in rows]
+        # Apply the published Google domain policy while keeping the local database read-only.
+        for rule in rules:
+            if OUTBOUND_MAP.get(rule["outbound_id"]) != "out-ai":
+                continue
+            tags = jload(rule["rule_set_json"])
+            if "geoip-google" in tags:
+                if "geosite-google" not in tags:
+                    rule["rule_set_json"] = json.dumps([*tags, "geosite-google"])
+                break
+        else:
+            raise ValueError(f"Profile {pid} has no out-ai rule referencing geoip-google")
+        profiles[pid] = {"meta": dict(row), "rules": rules}
     return profiles
 
 
 def jload(col):
     return json.loads(col) if col else []
-
-
-def collect_used_rulesets(profiles):
-    used = {}
-    for p in profiles.values():
-        for r in p["rules"]:
-            for name in jload(r["rule_set_json"]):
-                used[name] = True
-    return used
 
 
 def _match_groups(profile):
@@ -135,25 +139,26 @@ def _match_groups(profile):
 
 def build_singbox(profile):
     used = {}
-    rules = [{"protocol": "dns", "action": "hijack-dns"}]
+    rules = [{"action": "sniff"}, {"protocol": "dns", "action": "hijack-dns"}]
     for out, _label, m in _match_groups(profile):
         for name in m.get("rule_set", []):
             used[name] = True
-        # sing-box 单条规则内不同字段是 AND，需用 logical or 包裹才能合并
+        # 显式 OR 保留各匹配器的独立性，包括含多条规则的 rule-set。
         sub = [{k: v} for k, v in m.items()]
-        rules.append({"type": "logical", "mode": "or", "rules": sub, "outbound": out})
+        rules.append({"type": "logical", "mode": "or", "rules": sub, "action": "route", "outbound": out})
     rule_set = [
         {
             "type": "remote",
             "tag": name,
             "format": "binary",
             "url": RULESETS[name][0],
-            "download_detour": "proxy",
+            "http_client": SING_HTTP_CLIENT,
         }
         for name in used
     ]
     final = OUTBOUND_MAP[profile["meta"]["default_outbound_id"]]
     return {
+        "http_clients": [{"tag": SING_HTTP_CLIENT, "detour": "proxy"}],
         "route": {
             "rules": rules,
             "rule_set": rule_set,
@@ -268,7 +273,7 @@ def build_mihomo(profile):
             continue
         for name in jload(r["rule_set_json"]):
             if name == "geoip-openai":
-                note = "  # Throne 原集合 geoip-openai(仅 sing-box 格式)，此处用 ipinfo ai 类别替代"
+                note = "  # ipinfo AI 类别"
             else:
                 note = comment if first else None
             is_ip = name.startswith("geoip-")
@@ -301,19 +306,18 @@ def build_mihomo(profile):
         out.append(f'  "{tag}":')
         out.append("    type: http")
         out.append(f"    behavior: {p['behavior']}")
-        out.append("    format: yaml")
+        extension = "yaml" if p["behavior"] == "classical" else "mrs"
+        out.append(f"    format: {extension}")
         out.append(f'    url: "{p["url"]}"')
-        out.append(f"    path: ./ruleset/{tag}.yaml")
+        out.append(f"    path: ./ruleset/{tag}.{extension}")
         out.append("    interval: 86400")
         if p.get("proxy"):
-            out.append(f"    proxy: {p['proxy']}  # raw.githubusercontent.com 需经代理下载；不需要可删")
+            out.append(f"    proxy: {p['proxy']}")
     return "\n".join(out) + "\n"
 
 
 def build_v2rayn_rules(profile):
-    """v2rayN 自定义路由规则数组（Xray 风格；数组内 OR 语义，相邻同出站已合并为单条）。"""
-    # geoip.dat(Loyalsoldier 扩展版) 里没有 openai 类别，只有 sing-box ruleset 能解析
-    geoip_dat_note = {"openai": "；geoip:openai 需 sing-box 内核+自定义 ruleset"}
+    """v2rayN 自定义路由规则数组，两种内核的生成器都会拆分 domain 和 ip。"""
     entries = []
     for out, label, m in _match_groups(profile):
         out = V2RAYN_OUT[out]
@@ -324,8 +328,6 @@ def build_v2rayn_rules(profile):
                 if rs.startswith("geoip-"):
                     cat = rs[len("geoip-"):]
                     ip.append(f"geoip:{cat}")
-                    if cat in geoip_dat_note:
-                        entry["remarks"] += geoip_dat_note[cat]
                 else:
                     domain.append(f"geosite:{rs[len('geosite-'):]}")
             if domain:
@@ -347,7 +349,7 @@ def build_v2rayn_rules(profile):
     return entries
 
 
-def write_v2rayn(profiles, used_rulesets):
+def write_v2rayn(profiles):
     d = OUT_ROOT / "v2rayN"
     d.mkdir(parents=True, exist_ok=True)
     for pid, slug in PROFILE_IDS.items():
@@ -356,20 +358,6 @@ def write_v2rayn(profiles, used_rulesets):
             + "\n",
             encoding="utf-8",
         )
-    # 自定义 sing-box rule set：tag -> 与 Throne 相同的 .srs 源
-    ruleset = [
-        {
-            "tag": name,
-            "type": "remote",
-            "format": "binary",
-            "url": RULESETS[name][0],
-            "download_detour": "proxy",
-        }
-        for name in used_rulesets
-    ]
-    (d / "singbox-custom-ruleset.json").write_text(
-        json.dumps(ruleset, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
-    )
 
 
 def _throne_outbound_name(con, outbound_id):
@@ -383,7 +371,7 @@ def _throne_outbound_name(con, outbound_id):
 
 
 def build_throne_share(con, profile):
-    """Throne 路由分享对象（throne-route-profile v1，逐条形式）。"""
+    """Throne 远程订阅接受的结构化 v1 路由。"""
     rules = []
     for r in profile["rules"]:
         rule = {"type": "custom", "name": r["name"]}
@@ -414,6 +402,32 @@ def build_throne_share(con, profile):
     }
 
 
+def build_throne_raw_share(con, profile):
+    """Throne 1.4.2+ raw 分享可携带显式 HTTP client，并按节点名称重映射出站。"""
+    route = build_singbox(profile)["route"]
+    outbound_ids = {tag: oid for oid, tag in OUTBOUND_MAP.items() if oid > 0}
+    outbound_names = {}
+    for rule in route["rules"]:
+        outbound_id = outbound_ids.get(rule.get("outbound"))
+        if outbound_id is not None:
+            row = con.execute("SELECT name FROM profiles WHERE id=?", (outbound_id,)).fetchone()
+            if row is None:
+                raise ValueError(f"Throne outbound profile {outbound_id} is missing")
+            outbound_names[str(outbound_id)] = row["name"]
+            rule["outbound"] = outbound_id
+    for ruleset in route["rule_set"]:
+        ruleset["http_client"] = {"detour": "proxy"}
+    return {
+        "kind": "throne-route-profile",
+        "v": 1,
+        "name": profile["meta"]["name"].replace("ai-bb", "out-ai") + " [Raw]",
+        "raw": True,
+        "prevent_modifications": False,
+        "route": route,
+        "outbound_names": outbound_names,
+    }
+
+
 def _b64url_nopad(data: bytes) -> str:
     return base64.urlsafe_b64encode(data).rstrip(b"=").decode("ascii")
 
@@ -423,10 +437,13 @@ def write_throne(con, profiles):
     d.mkdir(parents=True, exist_ok=True)
     sub_urls = []
     for pid, slug in PROFILE_IDS.items():
-        obj = build_throne_share(con, profiles[pid])
-        compact = json.dumps(obj, ensure_ascii=False, separators=(",", ":"))
-        link = "throne://route/" + _b64url_nopad(compact.encode("utf-8"))
-        (d / f"{slug}.txt").write_text(link + "\n", encoding="utf-8")
+        for suffix, obj in (
+            ("", build_throne_share(con, profiles[pid])),
+            (".raw", build_throne_raw_share(con, profiles[pid])),
+        ):
+            compact = json.dumps(obj, ensure_ascii=False, separators=(",", ":"))
+            link = "throne://route/" + _b64url_nopad(compact.encode("utf-8"))
+            (d / f"{slug}{suffix}.txt").write_text(link + "\n", encoding="utf-8")
         # URL fragment 作为导入后的显示名（仅用 URL 安全字符）
         sub_urls.append(f"{SITE}/throne/{slug}.txt#{slug}")
     # 一次性把两条路由都加为远程订阅（throne://remoteroute/<b64url of URL 列表>）
@@ -443,8 +460,6 @@ def main():
     profiles = load_profiles(con)
     lists = custom_lists(profiles[6])
     assert len(lists) == 4, "custom lists incomplete"
-    used_rulesets = collect_used_rulesets(profiles)
-
     # 清理旧的生成内容（仅已知子目录；保留 index.md/CNAME/.nojekyll 等站点文件）
     for sub in ("sing-box", "mihomo", "v2rayN", "lists", "throne"):
         p = OUT_ROOT / sub
@@ -471,11 +486,11 @@ def main():
     write_rule_set_src(lists)
     write_mihomo_providers(lists)
     write_lists_txt(lists)
-    write_v2rayn(profiles, used_rulesets)
+    write_v2rayn(profiles)
     throne_urls = write_throne(con, profiles)
     con.close()
-    print("v2rayN -> *.rules.json + singbox-custom-ruleset.json (%d sets)" % len(used_rulesets))
-    print("throne -> 订阅文件 x2 + add-both-remote.txt")
+    print("v2rayN -> *.rules.json")
+    print("throne -> 结构化订阅 x2、Raw 分享 x2、add-both-remote.txt")
     for u in throne_urls:
         print("  ", u)
     print("done ->", OUT_ROOT)

@@ -8,10 +8,11 @@ rules:
   - RULE-SET,geosite-category-speedtest,DIRECT
   - RULE-SET,geosite-codeberg,DIRECT
   - RULE-SET,geoip-google,out-ai,no-resolve  # AI/Google-域名
-  - RULE-SET,geoip-openai,out-ai,no-resolve  # Throne 原集合 geoip-openai(仅 sing-box 格式)，此处用 ipinfo ai 类别替代
+  - RULE-SET,geoip-openai,out-ai,no-resolve  # ipinfo AI 类别
   - RULE-SET,geosite-anthropic,out-ai
   - RULE-SET,geosite-category-ai-!cn,out-ai
   - RULE-SET,geosite-unity,out-ai
+  - RULE-SET,geosite-google,out-ai
   - RULE-SET,out-ai-keywords,out-ai  # AI-关键字
   - RULE-SET,out-ai-domains,out-ai  # 特殊 US 链路
   - RULE-SET,geoip-telegram,PROXY,no-resolve  # Proxy域名
@@ -44,112 +45,120 @@ rule-providers:
   "geoip-private":
     type: http
     behavior: ipcidr
-    format: yaml
-    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/private.yaml"
-    path: ./ruleset/geoip-private.yaml
+    format: mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/private.mrs"
+    path: ./ruleset/geoip-private.mrs
     interval: 86400
-    proxy: PROXY  # raw.githubusercontent.com 需经代理下载；不需要可删
+    proxy: PROXY
   "geoip-cn":
     type: http
     behavior: ipcidr
-    format: yaml
-    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/cn.yaml"
-    path: ./ruleset/geoip-cn.yaml
+    format: mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/cn.mrs"
+    path: ./ruleset/geoip-cn.mrs
     interval: 86400
-    proxy: PROXY  # raw.githubusercontent.com 需经代理下载；不需要可删
+    proxy: PROXY
   "geosite-cn":
     type: http
     behavior: domain
-    format: yaml
-    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/cn.yaml"
-    path: ./ruleset/geosite-cn.yaml
+    format: mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/cn.mrs"
+    path: ./ruleset/geosite-cn.mrs
     interval: 86400
-    proxy: PROXY  # raw.githubusercontent.com 需经代理下载；不需要可删
+    proxy: PROXY
   "geosite-category-dev-cn":
     type: http
     behavior: domain
-    format: yaml
-    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-dev-cn.yaml"
-    path: ./ruleset/geosite-category-dev-cn.yaml
+    format: mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-dev-cn.mrs"
+    path: ./ruleset/geosite-category-dev-cn.mrs
     interval: 86400
-    proxy: PROXY  # raw.githubusercontent.com 需经代理下载；不需要可删
+    proxy: PROXY
   "geosite-category-speedtest":
     type: http
     behavior: domain
-    format: yaml
-    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-speedtest.yaml"
-    path: ./ruleset/geosite-category-speedtest.yaml
+    format: mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-speedtest.mrs"
+    path: ./ruleset/geosite-category-speedtest.mrs
     interval: 86400
-    proxy: PROXY  # raw.githubusercontent.com 需经代理下载；不需要可删
+    proxy: PROXY
   "geosite-codeberg":
     type: http
     behavior: domain
-    format: yaml
-    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/codeberg.yaml"
-    path: ./ruleset/geosite-codeberg.yaml
+    format: mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/codeberg.mrs"
+    path: ./ruleset/geosite-codeberg.mrs
     interval: 86400
-    proxy: PROXY  # raw.githubusercontent.com 需经代理下载；不需要可删
+    proxy: PROXY
   "geoip-google":
     type: http
     behavior: ipcidr
-    format: yaml
-    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/google.yaml"
-    path: ./ruleset/geoip-google.yaml
+    format: mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/google.mrs"
+    path: ./ruleset/geoip-google.mrs
     interval: 86400
-    proxy: PROXY  # raw.githubusercontent.com 需经代理下载；不需要可删
+    proxy: PROXY
   "geoip-openai":
     type: http
     behavior: ipcidr
-    format: yaml
-    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/ai.yaml"
-    path: ./ruleset/geoip-openai.yaml
+    format: mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/ai.mrs"
+    path: ./ruleset/geoip-openai.mrs
     interval: 86400
-    proxy: PROXY  # raw.githubusercontent.com 需经代理下载；不需要可删
+    proxy: PROXY
   "geosite-anthropic":
     type: http
     behavior: domain
-    format: yaml
-    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/anthropic.yaml"
-    path: ./ruleset/geosite-anthropic.yaml
+    format: mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/anthropic.mrs"
+    path: ./ruleset/geosite-anthropic.mrs
     interval: 86400
-    proxy: PROXY  # raw.githubusercontent.com 需经代理下载；不需要可删
+    proxy: PROXY
   "geosite-category-ai-!cn":
     type: http
     behavior: domain
-    format: yaml
-    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-ai-!cn.yaml"
-    path: ./ruleset/geosite-category-ai-!cn.yaml
+    format: mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-ai-!cn.mrs"
+    path: ./ruleset/geosite-category-ai-!cn.mrs
     interval: 86400
-    proxy: PROXY  # raw.githubusercontent.com 需经代理下载；不需要可删
+    proxy: PROXY
   "geosite-unity":
     type: http
     behavior: domain
-    format: yaml
-    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/unity.yaml"
-    path: ./ruleset/geosite-unity.yaml
+    format: mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/unity.mrs"
+    path: ./ruleset/geosite-unity.mrs
     interval: 86400
-    proxy: PROXY  # raw.githubusercontent.com 需经代理下载；不需要可删
+    proxy: PROXY
+  "geosite-google":
+    type: http
+    behavior: domain
+    format: mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/google.mrs"
+    path: ./ruleset/geosite-google.mrs
+    interval: 86400
+    proxy: PROXY
   "geoip-telegram":
     type: http
     behavior: ipcidr
-    format: yaml
-    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/telegram.yaml"
-    path: ./ruleset/geoip-telegram.yaml
+    format: mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/telegram.mrs"
+    path: ./ruleset/geoip-telegram.mrs
     interval: 86400
-    proxy: PROXY  # raw.githubusercontent.com 需经代理下载；不需要可删
+    proxy: PROXY
   "geosite-gfw":
     type: http
     behavior: domain
-    format: yaml
-    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/gfw.yaml"
-    path: ./ruleset/geosite-gfw.yaml
+    format: mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/gfw.mrs"
+    path: ./ruleset/geosite-gfw.mrs
     interval: 86400
-    proxy: PROXY  # raw.githubusercontent.com 需经代理下载；不需要可删
+    proxy: PROXY
   "geosite-geolocation-!cn":
     type: http
     behavior: domain
-    format: yaml
-    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/geolocation-!cn.yaml"
-    path: ./ruleset/geosite-geolocation-!cn.yaml
+    format: mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/geolocation-!cn.mrs"
+    path: ./ruleset/geosite-geolocation-!cn.mrs
     interval: 86400
-    proxy: PROXY  # raw.githubusercontent.com 需经代理下载；不需要可删
+    proxy: PROXY

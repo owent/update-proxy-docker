@@ -29,28 +29,27 @@
 
 <p>两条路由的区别：</p>
 <ul>
-  <li><strong>CN whitelist（白名单模式）</strong>：大陆/内网/私有域名直连，AI 及特殊域名走 <code>out-ai</code>，<strong>其余全部走代理</strong></li>
+  <li><strong>CN whitelist（白名单模式）</strong>：大陆/内网/私有域名优先直连，AI、Google 及特殊域名走 <code>out-ai</code>，<strong>其余全部走代理</strong></li>
   <li><strong>proxy list（代理名单模式）</strong>：直连规则同上，GFW/Telegram/国外域名走主代理，<strong>其余全部直连</strong></li>
 </ul>
 
-<h2>Throne</h2>
+<h2>Throne 1.4.2+</h2>
 <table>
   <tr><th>路由</th><th>订阅 URL</th></tr>
   <tr><td>CN whitelist</td><td><code>https://proxy-route.shkits.com/throne/smartroute-cn-whitelist-out-ai.txt</code></td></tr>
   <tr><td>proxy list</td><td><code>https://proxy-route.shkits.com/throne/smartroute-proxy-list-out-ai.txt</code></td></tr>
 </table>
-<p>Throne 中导入剪贴板/文件粘贴 deeplink，或把上面 URL 添加为远程路由配置（自动更新）。一次性订阅两条：
+<p>把 URL 添加为远程路由配置（自动更新）。一次性订阅两条：
 <a href="throne/add-both-remote.txt"><code>add-both-remote.txt</code></a>。</p>
+<p>带显式 HTTP client 的 Raw 版支持从剪贴板手动导入：<a href="throne/smartroute-cn-whitelist-out-ai.raw.txt">CN whitelist</a> · <a href="throne/smartroute-proxy-list-out-ai.raw.txt">proxy list</a>。</p>
 
-<h2>v2rayN（7.x，sing-box 内核）</h2>
+<h2>v2rayN 7.25.6+</h2>
 <table>
   <tr><th>内容</th><th>URL</th><th>用法</th></tr>
-  <tr><td>CN whitelist 路由规则</td><td><code>https://proxy-route.shkits.com/v2rayN/smartroute-cn-whitelist-out-ai.rules.json</code></td><td rowspan="3">规则集设置 → 填到<strong>可选地址 (Url)</strong> → 点<strong>「从订阅 Url 中导入规则」</strong></td></tr>
+  <tr><td>CN whitelist 路由规则</td><td><code>https://proxy-route.shkits.com/v2rayN/smartroute-cn-whitelist-out-ai.rules.json</code></td><td rowspan="2">规则集设置 → 选择一个 URL 填到<strong>可选地址 (Url)</strong> → 点<strong>「从订阅 Url 中导入规则」</strong></td></tr>
   <tr><td>proxy list 路由规则</td><td><code>https://proxy-route.shkits.com/v2rayN/smartroute-proxy-list-out-ai.rules.json</code></td></tr>
-  <tr><td>（二选一，不要同时导入）</td><td></td></tr>
-  <tr><td>自定义 sing-box rule set 映射（14 个）</td><td><code>https://proxy-route.shkits.com/v2rayN/singbox-custom-ruleset.json</code></td><td><strong>不是订阅地址！</strong>下载保存为本地文件，在规则集设置的<strong>「自定义 sing-box rule set」</strong>字段用「浏览」选择</td></tr>
 </table>
-<p>注意：导入的规则中 <code>outboundTag = out-ai</code> 需对应实际节点（改成节点别名，如 <code>vr-us-bb.shkits.com(AnyTLS)</code>，或建同名策略组）。</p>
+<p>将 <code>out-ai</code> 对应到实际节点或策略组。sing-box 内核将 <a href="https://raw.githubusercontent.com/Chocolate4U/Iran-sing-box-rules/rule-set/geoip-openai.srs">geoip-openai.srs</a> 放入 <code>bin/srss</code>，并清空旧的自定义规则集映射。Xray 内核使用含 <code>OPENAI</code> 类别的完整版 <code>geoip.dat</code>。<a href="README.md">安装说明</a></p>
 
 <h2>mihomo / Clash Meta / Clash Verge</h2>
 <table>
@@ -61,9 +60,9 @@
   <tr><td>out-ai-keywords provider</td><td><code>https://proxy-route.shkits.com/mihomo/providers/out-ai-keywords.yaml</code></td></tr>
   <tr><td>out-ai-domains provider</td><td><code>https://proxy-route.shkits.com/mihomo/providers/out-ai-domains.yaml</code></td></tr>
 </table>
-<p>把片段里的 <code>rules</code> + <code>rule-providers</code> 合并进配置即可（providers 已直接指向本站）。</p>
+<p>将 <code>rules</code> 和 <code>rule-providers</code> 合并进配置。公共集合使用 MRS，自定义列表使用 YAML。</p>
 
-<h2>sing-box</h2>
+<h2>sing-box 1.14+</h2>
 <table>
   <tr><th>内容</th><th>URL</th></tr>
   <tr><td>CN whitelist route 片段</td><td><a href="sing-box/smartroute-cn-whitelist-out-ai.json"><code>…/sing-box/smartroute-cn-whitelist-out-ai.json</code></a></td></tr>
@@ -72,6 +71,7 @@
   <tr><td>out-ai-keywords rule-set（source 格式）</td><td><code>https://proxy-route.shkits.com/sing-box/rule-set-src/out-ai-keywords.json</code></td></tr>
   <tr><td>out-ai-domains rule-set（source 格式）</td><td><code>https://proxy-route.shkits.com/sing-box/rule-set-src/out-ai-domains.json</code></td></tr>
 </table>
+<p>合并片段时同时合并顶层 <code>http_clients</code> 与 <code>route</code>。</p>
 
 <h2>其他工具（AdGuard / dnsmasq / SwitchyOmega 等）</h2>
 <p>纯文本列表见 <a href="lists/"><code>lists/</code></a>（direct-private-suffix / direct-private-regex / out-ai-keywords / out-ai-domains）。</p>
@@ -85,15 +85,8 @@ v2rayN 路由规则 outboundTag 直接填节点/策略组名；Throne 订阅导�
 <code>vr-us-bb.shkits.com(AnyTLS)</code> 解析（本机需存在同名节点，否则该组回退 proxy）。
 </div>
 
-<h2>关于 raw.githubusercontent.com 下载</h2>
-<p>公共 geosite/geoip 规则集仍托管在 raw.githubusercontent.com，导出配置已内置三层保障：</p>
-<ol>
-  <li><strong>sing-box / v2rayN</strong>：rule_set 带 <code>download_detour: "proxy"</code>（经代理下载）</li>
-  <li><strong>mihomo</strong>：对应 rule-provider 带 <code>proxy: PROXY</code>（经代理下载，按需改成你的组名）</li>
-  <li><strong>无代理环境</strong>：URL 换 jsdelivr 镜像，如
-      <code>https://cdn.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geoip/cn.srs</code>；
-      Throne 自身拉取 githubusercontent 订阅时会自动改写为 jsdelivr</li>
-</ol>
+<h2>规则集下载</h2>
+<p>sing-box 和 Throne Raw 的公共规则集由显式 HTTP client 通过 <code>proxy</code> 下载。mihomo 的公共 provider 通过 <code>PROXY</code> 下载。</p>
 <p>更多细节见 <a href="README.md"><code>README.md</code></a>。</p>
 
 </body>

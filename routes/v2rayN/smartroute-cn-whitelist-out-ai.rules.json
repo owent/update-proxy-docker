@@ -60,11 +60,12 @@
   {
     "outboundTag": "out-ai",
     "enabled": true,
-    "remarks": "AI/Google-域名+AI-关键字+特殊 US 链路；geoip:openai 需 sing-box 内核+自定义 ruleset",
+    "remarks": "AI/Google-域名+AI-关键字+特殊 US 链路",
     "domain": [
       "geosite:anthropic",
       "geosite:category-ai-!cn",
       "geosite:unity",
+      "geosite:google",
       "domain:nextcloud.com",
       "domain:topazlabs.com",
       "domain:jetbrains.ai",
